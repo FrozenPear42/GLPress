@@ -7,11 +7,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 set(SOURCE_FILES
         CubeModel.cpp
-        CubeModel.h
         gl_06.cpp
-        shprogram.cpp
-        shprogram.h
-        )
+        GLSLProgramCompiller.cpp
+        Main.cpp Main.h
+        Utils.cpp Utils.h
+        Window.cpp Window.h)
 
 
 find_package(GLFW3 REQUIRED)
