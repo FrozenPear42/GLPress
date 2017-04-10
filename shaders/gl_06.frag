@@ -1,6 +1,7 @@
 #version 330 core
 
-in vec2 TexCoord;
+in vec2 oTexCoord;
+in vec3 oPosition;
 
 out vec4 color;
 
@@ -9,7 +10,6 @@ uniform sampler2D Texture1;
 
 void main()
 {
-    color = vec4(TexCoord, 1.0, 1.0);
-    //color = texture2D(Texture1, vec2(1.0, 1.0) - TexCoord);
-    //color = mix(texture(Texture1, TexCoord), texture(Texture0, TexCoord),0.4);
+    vec4 t = texture(Texture1, oTexCoord);
+    color = vec4(mix(t.rgb, oPosition, 0.8), 1.0f);
 }

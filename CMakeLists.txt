@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(GKOM_intro)
+project(GLPress)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -11,8 +11,9 @@ set(SOURCE_FILES
         Main.cpp
         Utils.cpp
         Window.cpp
+        Material.cpp
+        Material.h
         )
-
 
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
@@ -29,20 +30,24 @@ add_definitions(${OPENGL_DEFINITIONS})
 find_package(X11 REQUIRED)
 set(LIBS ${GLFW3_LIBRARY} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread GLEW SOIL)
 
+#file(GLOB SHADERS "shaders/*")
+#foreach (SHADER ${SHADERS})
+#    file(COPY ${SHADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/shaders)
+#    message(STATUS ${SHADER})
+#endforeach (SHADER)
+#
+#file(GLOB RESOURCES "resources/*")
+#foreach (RES ${RESOURCES})
+#    file(REMOVE ${CMAKE_CURRENT_BINARY_DIR}/resources)
+#    file(COPY ${RES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/resources)
+#    message(STATUS ${RES})
+#endforeach (RES)
 
-file(GLOB SHADERS "shaders/*")
-foreach (SHADER ${SHADERS})
-    file(COPY ${SHADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/shaders)
-    message(STATUS ${SHADER})
-endforeach (SHADER)
+add_executable(GLPress ${SOURCE_FILES})
+target_link_libraries(GLPress ${LIBS})
 
-file(GLOB RESOURCES "resources/*")
-foreach (RES ${RESOURCES})
-    file(REMOVE ${CMAKE_CURRENT_BINARY_DIR}/resources)
-    file(COPY ${RES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/resources)
-    message(STATUS ${RES})
-endforeach (RES)
-
-
-add_executable(GKOM_intro ${SOURCE_FILES})
-target_link_libraries(GKOM_intro ${LIBS})
+add_custom_command(TARGET GLPress POST_BUILD
+        COMMAND cp -Rf ${CMAKE_SOURCE_DIR}/shaders/ ${CMAKE_CURRENT_BINARY_DIR}/shaders/
+        COMMAND cp -Rf ${CMAKE_SOURCE_DIR}/resources/ ${CMAKE_CURRENT_BINARY_DIR}/resources/
+        COMMENT "Copied shaders and resources"
+        )

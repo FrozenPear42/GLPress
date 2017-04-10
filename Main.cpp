@@ -62,7 +62,6 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
 
 
 bool Main::nextFrame() {
-
     GLfloat currentFrame = (GLfloat) glfwGetTime();
     mDelta = currentFrame - mLastFrame;
     mLastFrame = currentFrame;
