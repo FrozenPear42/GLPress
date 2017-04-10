@@ -11,5 +11,5 @@ uniform sampler2D Texture1;
 void main()
 {
     vec4 t = texture(Texture1, oTexCoord);
-    color = vec4(mix(t.rgb, oPosition, 0.8), 1.0f);
+    color = vec4(mix(t.rgb, oPosition, 0.4), 1.0f);
 }

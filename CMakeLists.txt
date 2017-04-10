@@ -30,24 +30,27 @@ add_definitions(${OPENGL_DEFINITIONS})
 find_package(X11 REQUIRED)
 set(LIBS ${GLFW3_LIBRARY} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread GLEW SOIL)
 
-#file(GLOB SHADERS "shaders/*")
-#foreach (SHADER ${SHADERS})
-#    file(COPY ${SHADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/shaders)
-#    message(STATUS ${SHADER})
-#endforeach (SHADER)
-#
-#file(GLOB RESOURCES "resources/*")
-#foreach (RES ${RESOURCES})
-#    file(REMOVE ${CMAKE_CURRENT_BINARY_DIR}/resources)
-#    file(COPY ${RES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/resources)
-#    message(STATUS ${RES})
-#endforeach (RES)
+file(GLOB SHADERS "shaders/*")
+foreach (SHADER ${SHADERS})
+    file(COPY ${SHADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/shaders)
+    message(STATUS ${SHADER})
+endforeach (SHADER)
+
+file(GLOB RESOURCES "resources/*")
+foreach (RES ${RESOURCES})
+    file(REMOVE ${CMAKE_CURRENT_BINARY_DIR}/resources)
+    file(COPY ${RES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/resources)
+    message(STATUS ${RES})
+endforeach (RES)
 
 add_executable(GLPress ${SOURCE_FILES})
 target_link_libraries(GLPress ${LIBS})
 
-add_custom_command(TARGET GLPress POST_BUILD
-        COMMAND cp -Rf ${CMAKE_SOURCE_DIR}/shaders/ ${CMAKE_CURRENT_BINARY_DIR}/shaders/
-        COMMAND cp -Rf ${CMAKE_SOURCE_DIR}/resources/ ${CMAKE_CURRENT_BINARY_DIR}/resources/
-        COMMENT "Copied shaders and resources"
-        )
+#
+#add_custom_command(TARGET GLPress POST_BUILD
+#        COMMAND cp -Rf ${CMAKE_SOURCE_DIR}/shaders ${CMAKE_CURRENT_BINARY_DIR}/shaders
+#        COMMAND cp -Rf ${CMAKE_SOURCE_DIR}/resources ${CMAKE_CURRENT_BINARY_DIR}/resources
+#        COMMENT "Copied shaders and resources"
+#        DEPENDS shaders/gl_06.vert
+#        DEPENDS shaders/gl_06.frag
+#        )
