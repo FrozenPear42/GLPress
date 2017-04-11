@@ -6,9 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "CubeModel.h"
-#include "GLSLProgramCompiler.h"
-#include "Utils.h"
-#include "Window.h"
+#include "Utils/GLSLProgramCompiler.h"
+#include "Utils/Utils.h"
+#include "Utils/Window.h"
 #include "Main.h"
 
 GLfloat pitch = 0.0f;
@@ -27,7 +27,6 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                mCube(1.0f) {
     mView = glm::lookAt(mCameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     mProjection = glm::perspective(45.0f, (GLfloat) 800 / 600, 0.1f, 100.0f);
-
 
     GLuint program = GLSLProgramCompiler::fromFiles("shaders/gl_06.vert", "shaders/gl_06.frag");
 
@@ -70,7 +69,6 @@ bool Main::nextFrame() {
 
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 
     GLfloat cameraSpeed = 100.0f * mDelta;
     if (mWindow.isPressed(GLFW_KEY_UP))

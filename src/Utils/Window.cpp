@@ -5,7 +5,7 @@ Window::Window(unsigned int width, unsigned int height, std::string title) {
     if (glfwInit() != GL_TRUE)
         throw std::runtime_error("GLFW initialization failed");
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
