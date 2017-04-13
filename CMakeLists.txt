@@ -6,14 +6,16 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 set(SOURCE_FILES
-        src/CubeModel.cpp
         src/Utils/GLSLProgramCompiller.cpp
         src/Main.cpp
         src/Utils/Utils.cpp
         src/Utils/Window.cpp
         src/Material/Material.cpp
-        src/Material/Material.h
-        src/Model/Mesh.cpp src/Model/Mesh.h src/Model/Model.cpp src/Model/Model.h src/Light/Light.cpp src/Light/Light.h src/Material/Texture.cpp src/Material/Texture.h)
+        src/Model/Mesh.cpp
+        src/Model/Model.cpp
+        src/Light/Light.cpp
+        src/Material/Texture.cpp
+        )
 
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
