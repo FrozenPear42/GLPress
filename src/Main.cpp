@@ -21,10 +21,9 @@ const GLfloat yaw_min = 0.0f;
 
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
-               mCameraPosition(0.0f, 0.0f, 3.0f),
+               mCameraPosition(0.0f, 0.0f, 6.0f),
                mDelta(0.0f),
-               mLastFrame(0.0f),
-               mCube(1.0f) {
+               mLastFrame(0.0f) {
     mView = glm::lookAt(mCameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     mProjection = glm::perspective(45.0f, (GLfloat) 800 / 600, 0.1f, 100.0f);
 
@@ -57,6 +56,8 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     glUniformMatrix4fv(mProjectionUniform, 1, GL_FALSE, glm::value_ptr(mProjection));
     glUniformMatrix4fv(mViewUniform, 1, GL_FALSE, glm::value_ptr(mView));
 
+    mCube = std::make_shared<Model>(Mesh::loadFromFile("resources/cube.mesh"), std::make_shared<Material>());
+
 }
 
 
@@ -87,7 +88,8 @@ bool Main::nextFrame() {
     glm::mat4 trans;
     trans = glm::rotate(trans, glm::radians(pitch), glm::vec3(1, 0, 0));
     trans = glm::rotate(trans, glm::radians(yaw), glm::vec3(0, 1, 0));
-    mCube.Draw(trans, mModelUniform);
+    mCube->setTransform(trans);
+    mCube->draw();
 
     mWindow.swapBuffers();
     return !mWindow.isFinalize();

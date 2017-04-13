@@ -1,6 +1,8 @@
 #ifndef GKOM_INTRO_MAIN_H
 #define GKOM_INTRO_MAIN_H
 
+#include "Model/Model.h"
+
 class Main {
 private:
     Window mWindow;
@@ -10,7 +12,7 @@ private:
     GLfloat mDelta;
     GLfloat mLastFrame;
 
-    CubeModel mCube;
+    std::shared_ptr<Model> mCube;
 
     GLint mProjectionUniform;
     GLint mViewUniform;

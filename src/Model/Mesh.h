@@ -2,27 +2,34 @@
 #define GLPRESS_MESH_H
 
 #include <vector>
+#include <string>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <GL/gl.h>
+#include <memory>
+
+struct Vertex {
+    glm::vec3 position;
+    glm::vec2 textCoord;
+    Vertex() {};
+    Vertex(glm::vec3 position, glm::vec2 textCoord) : position(position), textCoord(textCoord) {}
+};
 
 class Mesh {
+
 public:
-    typedef struct {
-        glm::vec3 position;
-        glm::vec2 textCoord;
-    } Vertex;
+    static std::shared_ptr<Mesh> loadFromFile(std::string fileName);
+    Mesh(std::vector<Vertex>&& vertices, std::vector<GLuint>&& indices);
+    void draw();
+
 private:
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
 
+    GLuint mVAO;
     GLuint mVBO;
     GLuint mEBO;
-    GLuint mVBA;
 
-public:
-    static Mesh* fromFile(std::string fileName);
-    Mesh();
 };
 
 

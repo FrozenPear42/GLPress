@@ -13,7 +13,7 @@ set(SOURCE_FILES
         src/Utils/Window.cpp
         src/Material/Material.cpp
         src/Material/Material.h
-        src/Model/Mesh.cpp src/Model/Mesh.h src/Model/Model.cpp src/Model/Model.h src/Light/Light.cpp src/Light/Light.h)
+        src/Model/Mesh.cpp src/Model/Mesh.h src/Model/Model.cpp src/Model/Model.h src/Light/Light.cpp src/Light/Light.h src/Material/Texture.cpp src/Material/Texture.h)
 
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
