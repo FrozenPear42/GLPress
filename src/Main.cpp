@@ -55,7 +55,8 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     glUniformMatrix4fv(mProjectionUniform, 1, GL_FALSE, glm::value_ptr(mProjection));
     glUniformMatrix4fv(mViewUniform, 1, GL_FALSE, glm::value_ptr(mView));
 
-    mCube = std::make_shared<Model>(Mesh::loadFromFile("resources/cube.mesh"), std::make_shared<Material>());
+    mCube = std::make_shared<Model>(Mesh::loadFromObjFile("resources/cube.obj"), std::make_shared<Material>());
+//    mCube = std::make_shared<Model>(Mesh::loadFromFile("resources/cube.mesh"), std::make_shared<Material>());
 
 }
 

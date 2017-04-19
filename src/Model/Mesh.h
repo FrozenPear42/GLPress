@@ -19,6 +19,7 @@ class Mesh {
 
 public:
     static std::shared_ptr<Mesh> loadFromFile(std::string fileName);
+    static std::shared_ptr<Mesh> loadFromObjFile(std::string fileName);
     Mesh(std::vector<Vertex>&& vertices, std::vector<GLuint>&& indices);
     void draw();
 

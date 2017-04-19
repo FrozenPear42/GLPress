@@ -16,7 +16,6 @@ private:
     Texture();
 private:
     GLuint mID;
-
 };
 
 

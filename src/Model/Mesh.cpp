@@ -1,7 +1,9 @@
 #include <GL/glew.h>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include "Mesh.h"
+#include "../Utils/Logger.h"
 
 Mesh::Mesh(std::vector<Vertex>&& vertices, std::vector<GLuint>&& indices) : mVertices(vertices), mIndices(indices) {
     glGenVertexArrays(1, &mVAO);
@@ -62,4 +64,66 @@ std::shared_ptr<Mesh> Mesh::loadFromFile(std::string fileName) {
     }
 
     return std::make_shared<Mesh>(std::move(vertices), std::move(indices));
+}
+
+std::shared_ptr<Mesh> Mesh::loadFromObjFile(std::string fileName) {
+    std::ifstream file(fileName.c_str());
+
+
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> textCoords;
+
+    std::vector<Vertex> resVertices;
+    std::vector<GLuint> resIndices;
+
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::istringstream data(line);
+        std::string actionToken;
+        data >> actionToken;
+        if (actionToken == "v") {
+            double x, y, z;
+            data >> x >> y >> z;
+            vertices.emplace_back(x, y, z);
+            Logger::info("Vertex");
+        } else if (actionToken == "vn") {
+            double x, y, z;
+            data >> x >> y >> z;
+            normals.emplace_back(x, y, z);
+            Logger::info("Normal");
+        } else if (actionToken == "vt") {
+            double u, v;
+            data >> u >> v;
+            textCoords.emplace_back(u, v);
+            Logger::info("Texture");
+        } else if (actionToken == "f") {
+            std::string values;
+            std::string item;
+            GLuint v, n, t;
+            GLuint pos;
+
+            while (data >> values) {
+                pos = (GLuint) values.find("/", 0);
+                item = values.substr(0, pos);
+                v = (GLuint) std::stoi(item) - 1;
+
+                values = values.substr(pos + 1);
+                pos = (GLuint) values.find("/", 0);
+                item = values.substr(0, pos);
+                n = (GLuint) std::stoi(item) - 1;
+
+                values = values.substr(pos + 1);
+                pos = (GLuint) values.find("/", 0);
+                item = values.substr(0, pos);
+                t = (GLuint) std::stoi(item) - 1;
+
+                Logger::info("Face " + std::to_string(v) + " " + std::to_string(n) + " " + std::to_string(t));
+                resVertices.emplace_back(vertices[v], textCoords[t]);
+                resIndices.emplace_back(resVertices.size() - 1);
+            }
+        }
+    }
+    return std::make_shared<Mesh>(std::move(resVertices), std::move(resIndices));
 }

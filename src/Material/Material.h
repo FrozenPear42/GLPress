@@ -2,7 +2,7 @@
 #define GKOM_INTRO_MATERIAL_H
 
 #include <cstdlib>
-#include <cstring>
+#include <string>
 #include <GL/glew.h>
 
 class Material {
