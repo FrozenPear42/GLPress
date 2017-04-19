@@ -112,17 +112,21 @@ std::shared_ptr<Mesh> Mesh::loadFromObjFile(std::string fileName) {
                 values = values.substr(pos + 1);
                 pos = (GLuint) values.find("/", 0);
                 item = values.substr(0, pos);
-                n = (GLuint) std::stoi(item) - 1;
+                t = (GLuint) std::stoi(item) - 1;
 
                 values = values.substr(pos + 1);
                 pos = (GLuint) values.find("/", 0);
                 item = values.substr(0, pos);
-                t = (GLuint) std::stoi(item) - 1;
+                n = (GLuint) std::stoi(item) - 1;
 
                 Logger::info("Face " + std::to_string(v) + " " + std::to_string(n) + " " + std::to_string(t));
                 resVertices.emplace_back(vertices[v], textCoords[t]);
                 resIndices.emplace_back(resVertices.size() - 1);
             }
+        } else if(actionToken[0] == '#') {
+            std::string comment;
+            data >> comment;
+            Logger::info("Comment: " + comment);
         }
     }
     return std::make_shared<Mesh>(std::move(resVertices), std::move(resIndices));
