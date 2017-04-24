@@ -20,7 +20,7 @@ const GLfloat yaw_min = 0.0f;
 
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
-               mCameraPosition(0.0f, 0.0f, 6.0f),
+               mCameraPosition(0.0f, 0.0f, 3.0f),
                mDelta(0.0f),
                mLastFrame(0.0f) {
     mView = glm::lookAt(mCameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -55,7 +55,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     glUniformMatrix4fv(mProjectionUniform, 1, GL_FALSE, glm::value_ptr(mProjection));
     glUniformMatrix4fv(mViewUniform, 1, GL_FALSE, glm::value_ptr(mView));
 
-    mCube = std::make_shared<Model>(Mesh::loadFromObjFile("resources/cube.obj"), std::make_shared<Material>());
+    mCube = std::make_shared<Model>(Mesh::loadFromObjFile("resources/cube.obj"), std::make_shared<Material>("resources/materials/", "metal"));
 //    mCube = std::make_shared<Model>(Mesh::loadFromFile("resources/cube.mesh"), std::make_shared<Material>());
 
 }

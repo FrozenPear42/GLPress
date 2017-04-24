@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 #include "Mesh.h"
 #include "../Utils/Logger.h"
 
@@ -118,12 +119,21 @@ std::shared_ptr<Mesh> Mesh::loadFromObjFile(std::string fileName) {
                 pos = (GLuint) values.find("/", 0);
                 item = values.substr(0, pos);
                 n = (GLuint) std::stoi(item) - 1;
+ 
+                Logger::info("Vert " + std::to_string(v) + " " + std::to_string(n) + " " + std::to_string(t));
 
-                Logger::info("Face " + std::to_string(v) + " " + std::to_string(n) + " " + std::to_string(t));
-                resVertices.emplace_back(vertices[v], textCoords[t]);
-                resIndices.emplace_back(resVertices.size() - 1);
+                auto idx = std::find_if(resVertices.begin(), resVertices.end(), [&](const Vertex& vertex) -> bool {
+                    return vertex.position == vertices[v] && vertex.textCoord == textCoords[t];
+                });
+
+                if (idx == resVertices.end()) {
+                    resVertices.emplace_back(vertices[v], textCoords[t]);
+                    resIndices.emplace_back(resVertices.size() - 1);
+                } else {
+                    resIndices.emplace_back(idx - resVertices.begin());
+                }
             }
-        } else if(actionToken[0] == '#') {
+        } else if (actionToken[0] == '#') {
             std::string comment;
             data >> comment;
             Logger::info("Comment: " + comment);
