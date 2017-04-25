@@ -6,7 +6,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Utils/GLSLProgramCompiler.h"
-#include "Utils/Utils.h"
 #include "Utils/Window.h"
 #include "Main.h"
 
@@ -19,45 +18,14 @@ const GLfloat yaw_max = 360.0f;
 const GLfloat yaw_min = 0.0f;
 
 
-Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
-               mCameraPosition(0.0f, 0.0f, 3.0f),
-               mDelta(0.0f),
-               mLastFrame(0.0f) {
+Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mCameraPosition(0.0f, 0.0f, 3.0f), mDelta(0.0f), mLastFrame(0.0f) {
+
     mView = glm::lookAt(mCameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     mProjection = glm::perspective(45.0f, (GLfloat) 800 / 600, 0.1f, 100.0f);
 
-    GLuint program = GLSLProgramCompiler::fromFiles("shaders/gl_06.vert", "shaders/gl_06.frag");
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    GLuint texture0 = Utils::mipmapTextureFromFile(GL_TEXTURE0, "resources/iipw.png");
-    GLuint texture1 = Utils::mipmapTextureFromFile(GL_TEXTURE1, "resources/weiti.png");
-
     glEnable(GL_DEPTH_TEST);
 
-    glUseProgram(program);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture0);
-    glUniform1i(glGetUniformLocation(program, "Texture0"), 0);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glUniform1i(glGetUniformLocation(program, "Texture1"), 1);
-
-    mModelUniform = glGetUniformLocation(program, "model");
-    mViewUniform = glGetUniformLocation(program, "view");
-    mProjectionUniform = glGetUniformLocation(program, "projection");
-
-    glUniformMatrix4fv(mProjectionUniform, 1, GL_FALSE, glm::value_ptr(mProjection));
-    glUniformMatrix4fv(mViewUniform, 1, GL_FALSE, glm::value_ptr(mView));
-
     mCube = std::make_shared<Model>(Mesh::loadFromObjFile("resources/cube.obj"), std::make_shared<Material>("resources/materials/", "metal"));
-//    mCube = std::make_shared<Model>(Mesh::loadFromFile("resources/cube.mesh"), std::make_shared<Material>());
-
 }
 
 
@@ -89,7 +57,7 @@ bool Main::nextFrame() {
     trans = glm::rotate(trans, glm::radians(pitch), glm::vec3(1, 0, 0));
     trans = glm::rotate(trans, glm::radians(yaw), glm::vec3(0, 1, 0));
     mCube->setTransform(trans);
-    mCube->draw();
+    mCube->draw(mProjection, mView);
 
     mWindow.swapBuffers();
     return !mWindow.isFinalize();

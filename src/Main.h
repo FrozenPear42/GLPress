@@ -13,11 +13,6 @@ private:
     GLfloat mLastFrame;
 
     std::shared_ptr<Model> mCube;
-
-    GLint mProjectionUniform;
-    GLint mViewUniform;
-    GLint mModelUniform;
-
 public:
     Main();
 

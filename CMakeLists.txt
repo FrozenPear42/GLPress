@@ -8,7 +8,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 set(SOURCE_FILES
         src/Utils/GLSLProgramCompiller.cpp
         src/Main.cpp
-        src/Utils/Utils.cpp
         src/Utils/Window.cpp
         src/Material/Material.cpp
         src/Model/Mesh.cpp
@@ -31,12 +30,6 @@ find_package(OpenGL REQUIRED)
 add_definitions(${OPENGL_DEFINITIONS})
 find_package(X11 REQUIRED)
 set(LIBS ${GLFW3_LIBRARY} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread GLEW SOIL)
-
-file(GLOB SHADERS "shaders/*")
-foreach (SHADER ${SHADERS})
-    file(COPY ${SHADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/shaders)
-    message(STATUS ${SHADER})
-endforeach (SHADER)
 
 file(GLOB RESOURCES "resources/*")
 foreach (RES ${RESOURCES})

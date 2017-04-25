@@ -13,11 +13,11 @@ class Texture {
 public:
     static std::shared_ptr<Texture> loadFromFile(std::string file);
 
-private:
-    Texture();
+    Texture(GLuint texture);
 
+    GLuint getID() { return mTextureID; };
 private:
-    GLuint mID;
+    GLuint mTextureID;
 };
 
 
