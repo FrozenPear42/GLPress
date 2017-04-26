@@ -11,9 +11,15 @@ private:
     glm::vec3 mCameraPosition;
     GLfloat mDelta;
     GLfloat mLastFrame;
+    GLfloat mCameraVAngle;
+    GLfloat mCameraHAngle;
+    GLfloat mCameraDistance;
 
     std::shared_ptr<Model> mCube;
+    std::shared_ptr<Model> mCube2;
+
 public:
+
     Main();
 
     bool nextFrame();

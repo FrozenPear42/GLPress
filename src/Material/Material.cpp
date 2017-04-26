@@ -1,4 +1,5 @@
 #include <glm/gtc/type_ptr.hpp>
+#include <chrono>
 #include "Material.h"
 #include "Texture.h"
 #include "../Utils/GLSLProgramCompiler.h"
@@ -31,5 +32,7 @@ void Material::use(glm::mat4 projection, glm::mat4 view, glm::mat4 model) {
     glUniformMatrix4fv(mProjectionUniform, 1, GL_FALSE, glm::value_ptr(projection));
     glUniformMatrix4fv(mViewUniform, 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(mModelUniform, 1, GL_FALSE, glm::value_ptr(model));
+
+    glUniform1f(mTimeUniform, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 
 }
