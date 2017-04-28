@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <GL/glew.h>
+#include <glm/mat4x4.hpp>
 #include "Texture.h"
 
 class Material {

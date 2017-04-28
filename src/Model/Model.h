@@ -1,8 +1,6 @@
 #ifndef GLPRESS_MODEL_H
 #define GLPRESS_MODEL_H
 
-#include <glm/detail/type_mat.hpp>
-#include <glm/detail/type_mat4x4.hpp>
 #include "Mesh.h"
 #include "../Material/Texture.h"
 #include "../Material/Material.h"

@@ -3,10 +3,10 @@
 
 #include <vector>
 #include <string>
+#include <memory>
+#include <GL/glew.h>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
-#include <GL/gl.h>
-#include <memory>
 
 struct Vertex {
     glm::vec3 position;

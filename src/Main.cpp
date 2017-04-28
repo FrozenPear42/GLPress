@@ -5,7 +5,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Utils/GLSLProgramCompiler.h"
 #include "Utils/Window.h"
 #include "Main.h"
 

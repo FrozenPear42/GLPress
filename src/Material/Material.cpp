@@ -34,5 +34,4 @@ void Material::use(glm::mat4 projection, glm::mat4 view, glm::mat4 model) {
     glUniformMatrix4fv(mModelUniform, 1, GL_FALSE, glm::value_ptr(model));
 
     glUniform1f(mTimeUniform, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
-
 }
