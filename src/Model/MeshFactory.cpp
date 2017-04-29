@@ -109,11 +109,11 @@ std::shared_ptr<Mesh> MeshFactory::loadFromObjFile(std::string fileName) {
                 Logger::info("Vert " + std::to_string(v) + " " + std::to_string(n) + " " + std::to_string(t));
 
                 auto idx = std::find_if(resVertices.begin(), resVertices.end(), [&](const Vertex& vertex) -> bool {
-                    return vertex.position == vertices[v] && vertex.textCoord == textCoords[t];
+                    return vertex.position == vertices[v] && vertex.textCoord == textCoords[t] && vertex.normal == normals[n];
                 });
 
                 if (idx == resVertices.end()) {
-                    resVertices.emplace_back(vertices[v], normals[v], textCoords[t]);
+                    resVertices.emplace_back(vertices[v], normals[n], textCoords[t]);
                     resIndices.emplace_back(resVertices.size() - 1);
                 } else {
                     resIndices.emplace_back(idx - resVertices.begin());
