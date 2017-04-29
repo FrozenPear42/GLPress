@@ -13,10 +13,20 @@ public:
 
     Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
 
+    void setPosition(glm::vec3 position);
+
+    void setRotation(glm::vec3 rotation);
+
+private:
+    void recalculateTransform();
+
 private:
     std::shared_ptr<Mesh> mMesh;
     std::shared_ptr<Material> mMaterial;
     glm::mat4 mTransform;
+
+    glm::vec3 mPosition;
+    glm::vec3 mRotation;
 };
 
 

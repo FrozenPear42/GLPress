@@ -15,7 +15,7 @@ private:
     GLint mTimeUniform;
 
 private:
-    void renderModel(std::shared_ptr<Model>& model, std::shared_ptr<Light> light);
+    void renderModel(std::shared_ptr<Model>& model);
 
 public:
     Renderer();

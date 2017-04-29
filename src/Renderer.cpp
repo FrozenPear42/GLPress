@@ -28,13 +28,16 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
     glUniformMatrix4fv(mProjectionUniform, 1, GL_FALSE, glm::value_ptr(camera->mProjection));
     glUniformMatrix4fv(mViewUniform, 1, GL_FALSE, glm::value_ptr(camera->mView));
 
-    auto light = std::make_shared<Light>();
-    for (auto&& model : scene->mModels) {
-        renderModel(model, light);
+    for (auto&& light : scene->mLights) {
+        //TODO: set light uniforms
+
+        for (auto&& model : scene->mModels) {
+            renderModel(model);
+        }
     }
 }
 
-void Renderer::renderModel(std::shared_ptr<Model>& model, std::shared_ptr<Light> light) {
+void Renderer::renderModel(std::shared_ptr<Model>& model) {
     glUniformMatrix4fv(mModelUniform, 1, GL_FALSE, glm::value_ptr(model->mTransform));
 
     glActiveTexture(GL_TEXTURE0);

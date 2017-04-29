@@ -23,11 +23,11 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mCameraPosition(0.0f, 0.0f, 
     mMainScene->addModel(mCube);
     mMainScene->addModel(mCube2);
 
-    glm::mat4 trans;
-    trans = glm::translate(trans, glm::vec3(0, 0, -3));
-    mCube->setTransform(trans);
-    trans = glm::translate(trans, glm::vec3(0, 0, 3));
-    mCube2->setTransform(trans);
+    auto light = std::make_shared<Light>();
+    mMainScene->addLight(light);
+
+    mCube->setPosition(glm::vec3(0, 0, -3));
+    mCube2->setPosition(glm::vec3(0, 0, 3));
 }
 
 
