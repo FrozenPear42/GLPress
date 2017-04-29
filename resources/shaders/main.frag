@@ -12,5 +12,6 @@ uniform float time;
 void main()
 {
     vec4 t = texture(diffuseMap, oTexCoord);
-    color = vec4(mix(vec3(oTexCoord, sin(time)), t.rgb/2.0f, 0.2), 1.0);
+    float b = max(0, sin(time/1000.0f));
+    color = vec4(mix(vec3(oTexCoord, b), t.rgb/2.0f, 0.2), 1.0);
 }

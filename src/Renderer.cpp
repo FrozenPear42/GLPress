@@ -1,4 +1,5 @@
 #include <glm/gtc/type_ptr.hpp>
+#include <chrono>
 #include "Renderer.h"
 #include "Utils/GLSLProgramCompiler.h"
 
@@ -24,6 +25,10 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(mMainShaderProgram);
+
+    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    float fmodTime = (float) std::fmod(time, 1000 * glm::pi<float>());
+    glUniform1f(mTimeUniform, fmodTime);
 
     glUniformMatrix4fv(mProjectionUniform, 1, GL_FALSE, glm::value_ptr(camera->mProjection));
     glUniformMatrix4fv(mViewUniform, 1, GL_FALSE, glm::value_ptr(camera->mView));
