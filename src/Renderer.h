@@ -16,9 +16,11 @@ private:
 
 private:
     void renderModel(std::shared_ptr<Model>& model, std::shared_ptr<Light> light);
+
 public:
     Renderer();
-    void renderScene(std::shared_ptr<Scene>& scene);
+
+    void renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
 };
 
 

@@ -13,7 +13,6 @@ private:
     std::list<std::shared_ptr<Model>> mModels;
     std::list<std::shared_ptr<Light>> mLights;
 
-
 public:
     Scene();
 

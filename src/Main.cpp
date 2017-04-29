@@ -11,16 +11,17 @@
 
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mCameraPosition(0.0f, 0.0f, 10.0f), mDelta(0.0f), mLastFrame(0.0f),
-               mCameraHAngle(-glm::half_pi<GLfloat>()), mCameraVAngle(0), mCameraDistance(10) {
+               mCameraVAngle(0), mCameraHAngle(-glm::half_pi<GLfloat>()), mCameraDistance(10) {
 
-    mView = glm::lookAt(mCameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    mProjection = glm::perspective(45.0f, (GLfloat) 800 / 600, 0.1f, 100.0f);
+    mMainScene = std::make_shared<Scene>();
+    mCamera = std::make_shared<Camera>(mCameraPosition, glm::vec3(0, 0, 0));
 
-    glEnable(GL_DEPTH_TEST);
+    auto metalMaterial = std::make_shared<Material>("resources/materials/", "metal");
 
-    mCube = std::make_shared<Model>(MeshFactory::createCube(1, 1, 1), std::make_shared<Material>("resources/materials/", "metal"));
-    mCube2 = std::make_shared<Model>(MeshFactory::createCube(1, 1, 1), std::make_shared<Material>("resources/materials/", "metal"));
-
+    mCube = std::make_shared<Model>(MeshFactory::createCube(1, 1, 1), metalMaterial);
+    mCube2 = std::make_shared<Model>(MeshFactory::createCube(1, 1, 1), metalMaterial);
+    mMainScene->addModel(mCube);
+    mMainScene->addModel(mCube2);
 
     glm::mat4 trans;
     trans = glm::translate(trans, glm::vec3(0, 0, -3));
@@ -37,29 +38,22 @@ bool Main::nextFrame() {
 
     mWindow.poolEvents();
 
-    glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     GLfloat cameraSpeed = mDelta;
     if (mWindow.isPressed(GLFW_KEY_UP))
         mCameraVAngle += cameraSpeed;
     if (mWindow.isPressed(GLFW_KEY_DOWN))
-        mCameraVAngle += cameraSpeed;
+        mCameraVAngle -= cameraSpeed;
     if (mWindow.isPressed(GLFW_KEY_RIGHT))
         mCameraHAngle += cameraSpeed;
     if (mWindow.isPressed(GLFW_KEY_LEFT))
         mCameraHAngle -= cameraSpeed;
 
-
     mCameraPosition.x = (float) (mCameraDistance * cos(mCameraHAngle));
     mCameraPosition.y = (float) (mCameraDistance * sin(mCameraVAngle));
     mCameraPosition.z = (float) (mCameraDistance * sin(mCameraHAngle));
 
-
-    mView = glm::lookAt(mCameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-    mCube->draw(mProjection, mView);
-    mCube2->draw(mProjection, mView);
+    mCamera->setPosition(mCameraPosition);
+    mRenderer.renderScene(mMainScene, mCamera);
 
     mWindow.swapBuffers();
     return !mWindow.isFinalize();

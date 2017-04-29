@@ -6,11 +6,13 @@
 #include <glm/vec3.hpp>
 
 class Camera {
-    friend class Scene;
+    friend class Renderer;
 private:
     glm::mat4 mProjection;
     glm::mat4 mView;
     glm::vec3 mPostion;
+
+    glm::vec3 mTarget;
 public:
     Camera(glm::vec3 position, glm::vec3 target);
     void setPosition(glm::vec3 position);

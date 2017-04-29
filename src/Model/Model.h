@@ -6,10 +6,10 @@
 #include "../Material/Material.h"
 
 class Model {
+    friend class Renderer;
+
 public:
     void setTransform(glm::mat4 transform);
-
-    void draw(glm::mat4 projection, glm::mat4 view);
 
     Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
 

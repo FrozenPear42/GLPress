@@ -3,6 +3,7 @@
 
 #include "Model/Model.h"
 #include "Camera/Camera.h"
+#include "Renderer.h"
 
 class Main {
 private:
@@ -16,8 +17,9 @@ private:
     GLfloat mCameraHAngle;
     GLfloat mCameraDistance;
 
+    Renderer mRenderer;
+    std::shared_ptr<Scene> mMainScene;
     std::shared_ptr<Camera> mCamera;
-
     std::shared_ptr<Model> mCube;
     std::shared_ptr<Model> mCube2;
 

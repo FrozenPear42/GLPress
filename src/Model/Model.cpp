@@ -2,10 +2,6 @@
 #include <GL/glew.h>
 #include "Model.h"
 
-void Model::draw(glm::mat4 projection, glm::mat4 view) {
-    mMesh->draw();
-}
-
 void Model::setTransform(glm::mat4 transform) {
     mTransform = transform;
 }
