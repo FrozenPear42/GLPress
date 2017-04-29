@@ -20,8 +20,12 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mCameraPosition(0.0f, 0.0f, 
 
     mCube = std::make_shared<Model>(MeshFactory::createCube(2, 2, 2), metalMaterial);
     mCube2 = std::make_shared<Model>(MeshFactory::createCube(1, 1, 1), metalMaterial);
+
+    auto cylinder = std::make_shared<Model>(MeshFactory::createCylinder(1, 1, 24), metalMaterial);
+
     mMainScene->addModel(mCube);
     mMainScene->addModel(mCube2);
+    mMainScene->addModel(cylinder);
 
     auto light = std::make_shared<Light>();
     mMainScene->addLight(light);
@@ -29,6 +33,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mCameraPosition(0.0f, 0.0f, 
     mCube->setPosition(glm::vec3(0, 0, -3));
     mCube2->setPosition(glm::vec3(0, 0, 3));
     mCube->setRotation(glm::vec3(glm::quarter_pi<float>(), 0, 0));
+
 }
 
 
