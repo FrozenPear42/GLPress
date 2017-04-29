@@ -2,6 +2,7 @@
 #define GKOM_INTRO_MAIN_H
 
 #include "Model/Model.h"
+#include "Camera/Camera.h"
 
 class Main {
 private:
@@ -15,13 +16,13 @@ private:
     GLfloat mCameraHAngle;
     GLfloat mCameraDistance;
 
+    std::shared_ptr<Camera> mCamera;
+
     std::shared_ptr<Model> mCube;
     std::shared_ptr<Model> mCube2;
 
 public:
-
     Main();
-
     bool nextFrame();
 };
 

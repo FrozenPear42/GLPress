@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Utils/Window.h"
 #include "Main.h"
+#include "Model/MeshFactory.h"
 
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mCameraPosition(0.0f, 0.0f, 10.0f), mDelta(0.0f), mLastFrame(0.0f),
@@ -17,10 +18,8 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mCameraPosition(0.0f, 0.0f, 
 
     glEnable(GL_DEPTH_TEST);
 
-    mCube = std::make_shared<Model>(Mesh::loadFromObjFile("resources/cube.obj"),
-                                    std::make_shared<Material>("resources/materials/", "metal"));
-    mCube2 = std::make_shared<Model>(Mesh::loadFromObjFile("resources/cube.obj"),
-                                     std::make_shared<Material>("resources/materials/", "metal"));
+    mCube = std::make_shared<Model>(MeshFactory::createCube(1, 1, 1), std::make_shared<Material>("resources/materials/", "metal"));
+    mCube2 = std::make_shared<Model>(MeshFactory::createCube(1, 1, 1), std::make_shared<Material>("resources/materials/", "metal"));
 
 
     glm::mat4 trans;

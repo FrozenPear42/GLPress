@@ -3,7 +3,6 @@
 #include "Model.h"
 
 void Model::draw(glm::mat4 projection, glm::mat4 view) {
-    mMaterial->use(projection, view, mTransform);
     mMesh->draw();
 }
 

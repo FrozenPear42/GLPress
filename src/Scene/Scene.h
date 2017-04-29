@@ -8,10 +8,12 @@
 #include "../Camera/Camera.h"
 
 class Scene {
+    friend class Renderer;
 private:
-    std::list<Model> mModels;
-    std::list<Light> mLights;
-    GLuint mShadingProgram;
+    std::list<std::shared_ptr<Model>> mModels;
+    std::list<std::shared_ptr<Light>> mLights;
+
+
 public:
     Scene();
 
@@ -19,7 +21,10 @@ public:
 
     void removeModel(std::shared_ptr<Model> model);
 
-    void renderCamera(std::shared_ptr<Camera> camera);
+    void addLight(std::shared_ptr<Light> light);
+
+    void removeLight(std::shared_ptr<Light> light);
+
 };
 
 
