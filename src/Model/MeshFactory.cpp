@@ -5,15 +5,37 @@
 #include "MeshFactory.h"
 #include "../Utils/Logger.h"
 
-//TODO: change workaround
 std::shared_ptr<Mesh> MeshFactory::createCube(GLfloat w, GLfloat h, GLfloat d) {
-    auto res = loadFromObjFile("resources/cube.obj");
 
-    for(auto v : res->mVertices)
-        std::cout << "mVertices.emplace_back(glm::vec3(" << "\n";
+    std::vector<Vertex> vertices;
+    std::vector<GLuint> indices{0, 1, 2, 2, 1, 3, 4, 5, 6, 6, 5, 7, 8, 9, 10, 10, 9, 11, 12, 13, 14, 14, 13, 15, 16, 17, 18, 18,
+                        17, 19, 20, 21, 22, 22, 21, 23,};
+    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h, 0.5 * d), glm::vec3(0, 0, 1), glm::vec2(0, 0));
+    vertices.emplace_back(glm::vec3(0.5 * w, -0.5 * h, 0.5 * d), glm::vec3(0, 0, 1), glm::vec2(1, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w, 0.5 * h, 0.5 * d), glm::vec3(0, 0, 1), glm::vec2(0, 1));
+    vertices.emplace_back(glm::vec3(0.5 * w, 0.5 * h, 0.5 * d), glm::vec3(0, 0, 1), glm::vec2(1, 1));
+    vertices.emplace_back(glm::vec3(-0.5 * w, 0.5 * h, -0.5 * d), glm::vec3(0, 0, -1), glm::vec2(1, 1));
+    vertices.emplace_back(glm::vec3(0.5 * w, 0.5 * h, -0.5 * d), glm::vec3(0, 0, -1), glm::vec2(0, 1));
+    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h, -0.5 * d), glm::vec3(0, 0, -1), glm::vec2(1, 0));
+    vertices.emplace_back(glm::vec3(0.5 * w, -0.5 * h, -0.5 * d), glm::vec3(0, 0, -1), glm::vec2(0, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w, 0.5 * h, 0.5 * d), glm::vec3(0, 1, 0), glm::vec2(0, 0));
+    vertices.emplace_back(glm::vec3(0.5 * w, 0.5 * h, 0.5 * d), glm::vec3(0, 1, 0), glm::vec2(1, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w, 0.5 * h, -0.5 * d), glm::vec3(0, 1, 0), glm::vec2(0, 1));
+    vertices.emplace_back(glm::vec3(0.5 * w, 0.5 * h, -0.5 * d), glm::vec3(0, 1, 0), glm::vec2(1, 1));
+    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h, -0.5 * d), glm::vec3(0, -1, 0), glm::vec2(0, 0));
+    vertices.emplace_back(glm::vec3(0.5 * w, -0.5 * h, -0.5 * d), glm::vec3(0, -1, 0), glm::vec2(1, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h, 0.5 * d), glm::vec3(0, -1, 0), glm::vec2(0, 1));
+    vertices.emplace_back(glm::vec3(0.5 * w, -0.5 * h, 0.5 * d), glm::vec3(0, -1, 0), glm::vec2(1, 1));
+    vertices.emplace_back(glm::vec3(0.5 * w, -0.5 * h, 0.5 * d), glm::vec3(1, 0, 0), glm::vec2(0, 0));
+    vertices.emplace_back(glm::vec3(0.5 * w, -0.5 * h, -0.5 * d), glm::vec3(1, 0, 0), glm::vec2(1, 0));
+    vertices.emplace_back(glm::vec3(0.5 * w, 0.5 * h, 0.5 * d), glm::vec3(1, 0, 0), glm::vec2(0, 1));
+    vertices.emplace_back(glm::vec3(0.5 * w, 0.5 * h, -0.5 * d), glm::vec3(1, 0, 0), glm::vec2(1, 1));
+    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h, -0.5 * d), glm::vec3(-1, 0, 0), glm::vec2(0, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h, 0.5 * d), glm::vec3(-1, 0, 0), glm::vec2(1, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w, 0.5 * h, -0.5 * d), glm::vec3(-1, 0, 0), glm::vec2(0, 1));
+    vertices.emplace_back(glm::vec3(-0.5 * w, 0.5 * h, 0.5 * d), glm::vec3(-1, 0, 0), glm::vec2(1, 1));
 
-
-    return res;
+    return std::make_shared<Mesh>(std::move(vertices), std::move(indices));
 }
 
 std::shared_ptr<Mesh> MeshFactory::createCylinder(GLfloat r, GLfloat h, GLuint sides) {
@@ -109,7 +131,8 @@ std::shared_ptr<Mesh> MeshFactory::loadFromObjFile(std::string fileName) {
                 Logger::info("Vert " + std::to_string(v) + " " + std::to_string(n) + " " + std::to_string(t));
 
                 auto idx = std::find_if(resVertices.begin(), resVertices.end(), [&](const Vertex& vertex) -> bool {
-                    return vertex.position == vertices[v] && vertex.textCoord == textCoords[t] && vertex.normal == normals[n];
+                    return vertex.position == vertices[v] && vertex.textCoord == textCoords[t] &&
+                           vertex.normal == normals[n];
                 });
 
                 if (idx == resVertices.end()) {
@@ -126,4 +149,24 @@ std::shared_ptr<Mesh> MeshFactory::loadFromObjFile(std::string fileName) {
         }
     }
     return std::make_shared<Mesh>(std::move(resVertices), std::move(resIndices));
+}
+
+void MeshFactory::genearateCodeFrmObj(std::string fileName) {
+    auto res = loadFromObjFile("resources/cube.obj");
+
+    std::cout << "std::vector<Vertex> vertices;" << "\n";
+    std::cout << "std::vector<GLuint> indices{ ";
+    for (auto i : res->mIndices)
+        std::cout << i << ",";
+    std::cout << "};\n";
+
+    for (auto v : res->mVertices)
+        std::cout << "vertices.emplace_back(glm::vec3("
+                  << v.position.x << "*w" << ", " << v.position.y << "*h" << ", " << v.position.z << "*d"
+                  << "), glm::vec3("
+                  << v.normal.x << ", " << v.normal.y << ", " << v.normal.z
+                  << "), glm::vec2("
+                  << v.textCoord.x << ", " << v.textCoord.y
+                  << "));\n";
+
 }
