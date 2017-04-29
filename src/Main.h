@@ -20,8 +20,23 @@ private:
     Renderer mRenderer;
     std::shared_ptr<Scene> mMainScene;
     std::shared_ptr<Camera> mCamera;
-    std::shared_ptr<Model> mCube;
-    std::shared_ptr<Model> mCube2;
+
+    std::shared_ptr<Model> mBase;
+    std::shared_ptr<Model> mColumnRight;
+    std::shared_ptr<Model> mColumnLeft;
+    std::shared_ptr<Model> mHandler;
+
+    std::shared_ptr<Model> mTransportFront;
+    std::shared_ptr<Model> mTransportBack;
+
+    std::shared_ptr<Model> mTransportTop;
+    std::shared_ptr<Model> mTransportBottom;
+
+
+    std::shared_ptr<Model> mPress;
+
+
+
 
 public:
     Main();

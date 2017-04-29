@@ -10,30 +10,55 @@
 #include "Model/MeshFactory.h"
 
 
-Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mCameraPosition(0.0f, 0.0f, 10.0f), mDelta(0.0f), mLastFrame(0.0f),
-               mCameraVAngle(0), mCameraHAngle(-glm::half_pi<GLfloat>()), mCameraDistance(10) {
+Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0f),
+               mCameraVAngle(glm::quarter_pi<GLfloat>()), mCameraHAngle(glm::quarter_pi<GLfloat>()),
+               mCameraDistance(50) {
 
     mMainScene = std::make_shared<Scene>();
     mCamera = std::make_shared<Camera>(mCameraPosition, glm::vec3(0, 0, 0));
 
     auto metalMaterial = std::make_shared<Material>("resources/materials/", "metal");
 
-    mCube = std::make_shared<Model>(MeshFactory::createCube(2, 2, 2), metalMaterial);
-    mCube2 = std::make_shared<Model>(MeshFactory::createCube(1, 1, 1), metalMaterial);
+    mBase = std::make_shared<Model>(MeshFactory::createCube(30, 2, 40), metalMaterial);
+    mColumnLeft = std::make_shared<Model>(MeshFactory::createCube(3, 10, 3), metalMaterial);
+    mColumnRight = std::make_shared<Model>(MeshFactory::createCube(3, 10, 3), metalMaterial);
+    mColumnLeft->setPosition(glm::vec3(-10, 5, 0));
+    mColumnRight->setPosition(glm::vec3(10, 5, 0));
+    mHandler = std::make_shared<Model>(MeshFactory::createCube(23, 3, 3), metalMaterial);
+    mHandler->setPosition(glm::vec3(0, 11.5f, 0));
+    mPress = std::make_shared<Model>(MeshFactory::createCylinder(1, 13, 24), metalMaterial);
+    mPress->setRotation(glm::vec3(-glm::half_pi<float>(), 0, 0));
+    mPress->setPosition(glm::vec3(0, 10, 0));
 
-    auto cylinder = std::make_shared<Model>(MeshFactory::createCylinder(1, 1, 24), metalMaterial);
+    mTransportFront = std::make_shared<Model>(MeshFactory::createCylinder(0.5, 8, 24), metalMaterial);
+    mTransportFront->setPosition(glm::vec3(0, 2, 15));
+    mTransportFront->setRotation(glm::vec3(0, -glm::half_pi<float>(), 0));
 
-    mMainScene->addModel(mCube);
-    mMainScene->addModel(mCube2);
-    mMainScene->addModel(cylinder);
+    mTransportBack = std::make_shared<Model>(MeshFactory::createCylinder(0.5, 8, 24), metalMaterial);
+    mTransportBack->setPosition(glm::vec3(0, 2, -15));
+    mTransportBack->setRotation(glm::vec3(0, -glm::half_pi<float>(), 0));
+
+    mTransportTop = std::make_shared<Model>(MeshFactory::createPlane(8, 30), metalMaterial);
+    mTransportTop->setRotation(glm::vec3(-glm::half_pi<float>(), 0, 0));
+    mTransportTop->setPosition(glm::vec3(0,2.5,0));
+
+    mTransportBottom = std::make_shared<Model>(MeshFactory::createPlane(8, 30), metalMaterial);
+    mTransportBottom->setRotation(glm::vec3(glm::half_pi<float>(), 0, 0));
+    mTransportBottom->setPosition(glm::vec3(0,1.5,0));
+
+
+    mMainScene->addModel(mBase);
+    mMainScene->addModel(mColumnLeft);
+    mMainScene->addModel(mColumnRight);
+    mMainScene->addModel(mHandler);
+    mMainScene->addModel(mPress);
+    mMainScene->addModel(mTransportFront);
+    mMainScene->addModel(mTransportBack);
+    mMainScene->addModel(mTransportTop);
+    mMainScene->addModel(mTransportBottom);
 
     auto light = std::make_shared<Light>();
     mMainScene->addLight(light);
-
-    mCube->setPosition(glm::vec3(0, 0, -3));
-    mCube2->setPosition(glm::vec3(0, 0, 3));
-    mCube->setRotation(glm::vec3(glm::quarter_pi<float>(), 0, 0));
-
 }
 
 

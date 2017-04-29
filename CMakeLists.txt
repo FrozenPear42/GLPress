@@ -16,7 +16,7 @@ set(SOURCE_FILES
         src/Material/Texture.cpp
         src/Scene/Scene.cpp src/Scene/Scene.h
         src/Camera/Camera.cpp src/Camera/Camera.h
-        src/Model/MeshFactory.cpp src/Model/MeshFactory.h src/Renderer.cpp src/Renderer.h)
+        src/Model/MeshFactory.cpp src/Model/MeshFactory.h src/Renderer.cpp src/Renderer.h src/Scene/Group.cpp src/Scene/Group.h)
 
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
