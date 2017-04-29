@@ -10,19 +10,26 @@
 
 struct Vertex {
     glm::vec3 position;
+    glm::vec3 normal;
     glm::vec2 textCoord;
+
     Vertex() {};
-    Vertex(glm::vec3 position, glm::vec2 textCoord) : position(position), textCoord(textCoord) {}
+
+    Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 textCoord) : position(position),
+                                                                        normal(normal),
+                                                                        textCoord(textCoord) {}
 };
 
 class Mesh {
+    friend class MeshFactory;
 
 public:
     Mesh(std::vector<Vertex>&& vertices, std::vector<GLuint>&& indices);
+
     void draw();
 
 private:
-    Mesh();
+
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
 

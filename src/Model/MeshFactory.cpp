@@ -7,7 +7,13 @@
 
 //TODO: change workaround
 std::shared_ptr<Mesh> MeshFactory::createCube(GLfloat w, GLfloat h, GLfloat d) {
-    return loadFromObjFile("resources/cube.obj");
+    auto res = loadFromObjFile("resources/cube.obj");
+
+    for(auto v : res->mVertices)
+        std::cout << "mVertices.emplace_back(glm::vec3(" << "\n";
+
+
+    return res;
 }
 
 std::shared_ptr<Mesh> MeshFactory::createCylinder(GLfloat r, GLfloat h, GLuint sides) {
@@ -35,7 +41,7 @@ std::shared_ptr<Mesh> MeshFactory::loadFromFile(std::string fileName) {
     for (GLuint i = 0; i < verticesCount; ++i) {
         float data[5];
         file >> data[0] >> data[1] >> data[2] >> data[3] >> data[4];
-        vertices.emplace_back(glm::vec3(data[0], data[1], data[2]), glm::vec2(data[3], data[4]));
+        vertices.emplace_back(glm::vec3(data[0], data[1], data[2]), glm::vec3(), glm::vec2(data[3], data[4]));
     }
 
     for (GLuint i = 0; i < indicesCount; ++i) {
@@ -107,7 +113,7 @@ std::shared_ptr<Mesh> MeshFactory::loadFromObjFile(std::string fileName) {
                 });
 
                 if (idx == resVertices.end()) {
-                    resVertices.emplace_back(vertices[v], textCoords[t]);
+                    resVertices.emplace_back(vertices[v], normals[v], textCoords[t]);
                     resIndices.emplace_back(resVertices.size() - 1);
                 } else {
                     resIndices.emplace_back(idx - resVertices.begin());
