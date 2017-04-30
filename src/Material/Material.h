@@ -14,7 +14,10 @@ class Material {
 private:
     std::shared_ptr<Texture> mDiffuseMap;
     std::shared_ptr<Texture> mNormalMap;
+    std::shared_ptr<Texture> mSpecularMap;
+    GLfloat mShiness;
 public:
+
     Material(std::string directory, std::string name);
 };
 

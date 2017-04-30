@@ -15,7 +15,24 @@ Renderer::Renderer() {
 
     mDiffuseMapUniform = glGetUniformLocation(mMainShaderProgram, "diffuseMap");
     mNormalMapUniform = glGetUniformLocation(mMainShaderProgram, "normalMap");
+    mSpecularMapUniform = glGetUniformLocation(mMainShaderProgram, "specularMap");
     mTimeUniform = glGetUniformLocation(mMainShaderProgram, "time");
+
+    mLightTypeUniform = glGetSubroutineUniformLocation(mMainShaderProgram, GL_FRAGMENT_SHADER, "lightType");
+    mDirectLightType = glGetSubroutineIndex(mMainShaderProgram, GL_FRAGMENT_SHADER, "directLight");
+    mPointLightType = glGetSubroutineIndex(mMainShaderProgram, GL_FRAGMENT_SHADER, "pointLight");
+    mSpotLightType = glGetSubroutineIndex(mMainShaderProgram, GL_FRAGMENT_SHADER, "spotLight");
+
+    mPositionLightUniform = glGetUniformLocation(mMainShaderProgram, "light.position");
+    mDirectionLightUniform = glGetUniformLocation(mMainShaderProgram, "light.direction");
+    mAmbientLightUniform = glGetUniformLocation(mMainShaderProgram, "light.ambient");
+    mDiffuseLightUniform = glGetUniformLocation(mMainShaderProgram, "light.diffuse");
+    mSpecularLightUniform = glGetUniformLocation(mMainShaderProgram, "light.specular");
+    mCutOffLightUniform = glGetUniformLocation(mMainShaderProgram, "light.cutOff");
+    mOuterCutOffLightUniform = glGetUniformLocation(mMainShaderProgram, "light.outerCutOff");
+    mConstantLightUniform = glGetUniformLocation(mMainShaderProgram, "light.constant");
+    mLinearLightUniform = glGetUniformLocation(mMainShaderProgram, "light.linear");
+    mQuadraticLightUniform = glGetUniformLocation(mMainShaderProgram, "light.quadratic");
 
 }
 
@@ -26,7 +43,8 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
 
     glUseProgram(mMainShaderProgram);
 
-    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
     float fmodTime = (float) std::fmod(time, 1000 * glm::pi<float>());
     glUniform1f(mTimeUniform, fmodTime);
 
@@ -35,6 +53,18 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
 
     for (auto&& light : scene->mLights) {
         //TODO: set light uniforms
+        if (light->getType() == Light::Type::POINT) {
+            glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mPointLightType);
+        } else if (light->getType() == Light::Type::DIRECT) {
+            glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mDirectLightType);
+
+            glUniform3fv(mDirectionLightUniform, 1, glm::value_ptr(light->mDirection));
+            glUniform3fv(mAmbientLightUniform, 1, glm::value_ptr(light->mAmbient));
+            glUniform3fv(mDiffuseLightUniform, 1, glm::value_ptr(light->mDiffuse));
+
+        } else if (light->getType() == Light::Type::SPOT) {
+            glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mSpotLightType);
+        }
 
         for (auto&& model : scene->mModels) {
             renderModel(model);
@@ -43,6 +73,7 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
 }
 
 void Renderer::renderModel(std::shared_ptr<Model>& model) {
+
     glUniformMatrix4fv(mModelUniform, 1, GL_FALSE, glm::value_ptr(model->mTransform));
 
     glActiveTexture(GL_TEXTURE0);
@@ -52,6 +83,10 @@ void Renderer::renderModel(std::shared_ptr<Model>& model) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, model->mMaterial->mNormalMap->getID());
     glUniform1i(mNormalMapUniform, GL_TEXTURE1);
+
+//    glActiveTexture(GL_TEXTURE2);
+//    glBindTexture(GL_TEXTURE_2D, model->mMaterial->mSpecularMap->getID());
+//    glUniform1i(mSpecularMapUniform, GL_TEXTURE2);
 
     model->mMesh->draw();
 }

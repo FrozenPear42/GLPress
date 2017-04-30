@@ -12,7 +12,27 @@ private:
     GLint mModelUniform;
     GLint mDiffuseMapUniform;
     GLint mNormalMapUniform;
+    GLint mSpecularMapUniform;
     GLint mTimeUniform;
+
+    GLint mLightTypeUniform;
+    GLuint mDirectLightType;
+    GLuint mPointLightType;
+    GLuint mSpotLightType;
+
+    GLint mPositionLightUniform;
+    GLint mDirectionLightUniform;
+
+    GLint mAmbientLightUniform;
+    GLint mDiffuseLightUniform;
+    GLint mSpecularLightUniform;
+
+    GLint mCutOffLightUniform;
+    GLint mOuterCutOffLightUniform;
+
+    GLint mConstantLightUniform;
+    GLint mLinearLightUniform;
+    GLint mQuadraticLightUniform;
 
 private:
     void renderModel(std::shared_ptr<Model>& model);
@@ -21,6 +41,7 @@ public:
     Renderer();
 
     void renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
+
 };
 
 

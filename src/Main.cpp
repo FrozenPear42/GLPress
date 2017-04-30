@@ -8,6 +8,7 @@
 #include "Utils/Window.h"
 #include "Main.h"
 #include "Model/MeshFactory.h"
+#include "Light/DirectLight.h"
 
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0f),
@@ -57,7 +58,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     mMainScene->addModel(mTransportTop);
     mMainScene->addModel(mTransportBottom);
 
-    auto light = std::make_shared<Light>();
+    auto light = std::make_shared<DirectLight>(glm::vec3(0.5, 0.5, -0.5), glm::vec3(0.5, 0.7, 0.8), 1.0f);
     mMainScene->addLight(light);
 }
 
