@@ -52,9 +52,17 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
     glUniformMatrix4fv(mViewUniform, 1, GL_FALSE, glm::value_ptr(camera->mView));
 
     for (auto&& light : scene->mLights) {
-        //TODO: set light uniforms
+
         if (light->getType() == Light::Type::POINT) {
             glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mPointLightType);
+
+            glUniform3fv(mPositionLightUniform, 1, glm::value_ptr(light->mPosition));
+            glUniform3fv(mAmbientLightUniform, 1, glm::value_ptr(light->mAmbient));
+            glUniform3fv(mDiffuseLightUniform, 1, glm::value_ptr(light->mDiffuse));
+            glUniform1f(mConstantLightUniform, light->mConstant);
+            glUniform1f(mLinearLightUniform, light->mLinear);
+            glUniform1f(mQuadraticLightUniform, light->mQuadratic);
+
         } else if (light->getType() == Light::Type::DIRECT) {
             glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mDirectLightType);
 

@@ -34,6 +34,7 @@ uniform float time;
 
 uniform Light light;
 
+
 subroutine (lighting)
 vec4 directLight() {
     vec3 diffuse = texture2D(diffuseMap, oTexCoord).rgb;
@@ -56,7 +57,20 @@ vec4 directLight() {
 
 subroutine (lighting)
 vec4 pointLight() {
-    return texture2D(diffuseMap, oTexCoord);
+    float distance = length(light.position - oPosition);
+    float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+
+    vec3 diffuse = texture2D(diffuseMap, oTexCoord).rgb;
+    vec3 normal = oNormal;//normalize(texture2D(normalMap, oTexCoord).rgb);
+
+    vec3 ambient = light.ambient * diffuse;
+
+    vec3 lightDir = normalize(light.position - oPosition);
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    diffuse = light.diffuse * diff * diffuse;
+
+    return vec4(ambient + attenuation * diffuse, 1.0f);
 }
 
 subroutine (lighting)
@@ -66,9 +80,6 @@ vec4 spotLight() {
 
 void main()
 {
-    //vec4 t = texture(diffuseMap, oTexCoord);
-    //float b = max(0, sin(time/1000.0f));
-    //color = vec4(mix(vec3(oTexCoord, b), t.rgb/2.0f, 0.2), 1.0);
-    //color = vec4(abs(oNormal), 1.0f);
     color = lightType();
+    //color = vec4(oPosition, 1.0f);
 }

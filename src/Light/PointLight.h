@@ -5,10 +5,13 @@
 #ifndef GLPRESS_POINTLIGHT_H
 #define GLPRESS_POINTLIGHT_H
 
+#include <glm/vec3.hpp>
+#include <GL/glew.h>
+#include "Light.h"
 
-class PointLight {
-
+class PointLight : public Light {
+public:
+    PointLight(glm::vec3 position, glm::vec3 color, GLfloat intensity, GLfloat distance);
 };
-
 
 #endif //GLPRESS_POINTLIGHT_H
