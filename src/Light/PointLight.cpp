@@ -10,3 +10,7 @@ PointLight::PointLight(glm::vec3 position, glm::vec3 color, GLfloat intensity, G
     mLinear = 0.14;
     mQuadratic = 0.07;
 }
+
+void PointLight::setPosition(glm::vec3 position) {
+    mPosition = position;
+}

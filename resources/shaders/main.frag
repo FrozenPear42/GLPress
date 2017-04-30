@@ -75,7 +75,28 @@ vec4 pointLight() {
 
 subroutine (lighting)
 vec4 spotLight() {
-    return texture2D(diffuseMap, oTexCoord);
+
+    float distance = length(light.position - oPosition);
+    float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+
+    vec3 diffuse = texture2D(diffuseMap, oTexCoord).rgb;
+    vec3 normal = oNormal;//normalize(texture2D(normalMap, oTexCoord).rgb);
+
+    vec3 ambient = light.ambient * diffuse;
+
+    vec3 lightDir = normalize(light.position - oPosition);
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    // Spotlight (soft edges)
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = (light.cutOff - light.outerCutOff);
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+
+    diffuse = light.diffuse * diff * diffuse;
+    diffuse *= intensity;
+
+    return vec4(ambient + attenuation * diffuse, 1.0f);
+
 }
 
 void main()

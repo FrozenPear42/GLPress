@@ -72,6 +72,18 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
 
         } else if (light->getType() == Light::Type::SPOT) {
             glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mSpotLightType);
+
+            glUniform3fv(mPositionLightUniform, 1, glm::value_ptr(light->mPosition));
+            glUniform3fv(mDirectionLightUniform, 1, glm::value_ptr(light->mDirection));
+            glUniform3fv(mAmbientLightUniform, 1, glm::value_ptr(light->mAmbient));
+            glUniform3fv(mDiffuseLightUniform, 1, glm::value_ptr(light->mDiffuse));
+            glUniform1f(mConstantLightUniform, light->mConstant);
+            glUniform1f(mLinearLightUniform, light->mLinear);
+            glUniform1f(mQuadraticLightUniform, light->mQuadratic);
+
+            glUniform1f(mCutOffLightUniform, light->mCutOff);
+            glUniform1f(mOuterCutOffLightUniform, light->mOuterCutOff);
+
         }
 
         for (auto&& model : scene->mModels) {

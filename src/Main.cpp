@@ -8,13 +8,10 @@
 #include "Utils/Window.h"
 #include "Main.h"
 #include "Model/MeshFactory.h"
-#include "Light/DirectLight.h"
-#include "Light/PointLight.h"
-
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0f),
                mCameraVAngle(glm::quarter_pi<GLfloat>()), mCameraHAngle(glm::quarter_pi<GLfloat>()),
-               mCameraDistance(50) {
+               mCameraDistance(50), mLightPosition(glm::vec3(0, 0, 0)) {
 
     mMainScene = std::make_shared<Scene>();
     mCamera = std::make_shared<Camera>(mCameraPosition, glm::vec3(0, 0, 0));
@@ -42,11 +39,11 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
 
     mTransportTop = std::make_shared<Model>(MeshFactory::createPlane(8, 30), metalMaterial);
     mTransportTop->setRotation(glm::vec3(-glm::half_pi<float>(), 0, 0));
-    mTransportTop->setPosition(glm::vec3(0,2.5,0));
+    mTransportTop->setPosition(glm::vec3(0, 2.5, 0));
 
     mTransportBottom = std::make_shared<Model>(MeshFactory::createPlane(8, 30), metalMaterial);
     mTransportBottom->setRotation(glm::vec3(glm::half_pi<float>(), 0, 0));
-    mTransportBottom->setPosition(glm::vec3(0,1.5,0));
+    mTransportBottom->setPosition(glm::vec3(0, 1.5, 0));
 
 
     mMainScene->addModel(mBase);
@@ -60,8 +57,9 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     mMainScene->addModel(mTransportBottom);
 
 //    auto light = std::make_shared<DirectLight>(glm::vec3(0.5, 0.5, -0.5), glm::vec3(0.5, 0.7, 0.8), 1.0f);
-    auto light = std::make_shared<PointLight>(glm::vec3(10, 12, 10), glm::vec3(0.5, 0.7, 0.8), 10.0f, 1.0f);
-    mMainScene->addLight(light);
+//    mSpotLight = std::make_shared<PointLight>(glm::vec3(10, 12, 10), glm::vec3(0.5, 0.7, 0.8), 10.0f, 1.0f);
+    mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(0.5, 0.7, 0.8), glm::radians(12.5f), 10.0f, 1.0f);
+    mMainScene->addLight(mSpotLight);
 }
 
 
@@ -82,11 +80,26 @@ bool Main::nextFrame() {
     if (mWindow.isPressed(GLFW_KEY_LEFT))
         mCameraHAngle -= cameraSpeed;
 
+    if (mWindow.isPressed(GLFW_KEY_S))
+        mLightPosition.z += 10 * cameraSpeed;
+    if (mWindow.isPressed(GLFW_KEY_W))
+        mLightPosition.z -= 10 * cameraSpeed;
+    if (mWindow.isPressed(GLFW_KEY_D))
+        mLightPosition.x += 10 * cameraSpeed;
+    if (mWindow.isPressed(GLFW_KEY_A))
+        mLightPosition.x -= 10 * cameraSpeed;
+    if (mWindow.isPressed(GLFW_KEY_PAGE_UP))
+        mLightPosition.y += 10 * cameraSpeed;
+    if (mWindow.isPressed(GLFW_KEY_PAGE_DOWN))
+        mLightPosition.y -= 10 * cameraSpeed;
+
+
     mCameraPosition.x = (float) (mCameraDistance * cos(mCameraHAngle));
     mCameraPosition.y = (float) (mCameraDistance * sin(mCameraVAngle));
     mCameraPosition.z = (float) (mCameraDistance * sin(mCameraHAngle));
 
     mCamera->setPosition(mCameraPosition);
+    mSpotLight->setTarget(mLightPosition);
     mRenderer.renderScene(mMainScene, mCamera);
 
     mWindow.swapBuffers();

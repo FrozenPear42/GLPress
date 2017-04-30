@@ -4,13 +4,15 @@
 #include "Model/Model.h"
 #include "Camera/Camera.h"
 #include "Renderer.h"
+#include "Light/PointLight.h"
+#include "Light/SpotLight.h"
 
 class Main {
 private:
     Window mWindow;
-    glm::mat4 mView;
-    glm::mat4 mProjection;
     glm::vec3 mCameraPosition;
+    glm::vec3 mLightPosition;
+
     GLfloat mDelta;
     GLfloat mLastFrame;
     GLfloat mCameraVAngle;
@@ -32,14 +34,14 @@ private:
     std::shared_ptr<Model> mTransportTop;
     std::shared_ptr<Model> mTransportBottom;
 
-
     std::shared_ptr<Model> mPress;
 
-
+    std::shared_ptr<SpotLight> mSpotLight;
 
 
 public:
     Main();
+
     bool nextFrame();
 };
 
