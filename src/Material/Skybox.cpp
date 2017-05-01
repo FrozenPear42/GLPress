@@ -53,27 +53,27 @@ Skybox::Skybox(std::string directory, std::string name) : mVertices{
     unsigned char* image;
     std::string prefix = directory + name;
 
-    image = SOIL_load_image((prefix + "_px.png").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    image = SOIL_load_image((prefix + "_px.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     SOIL_free_image_data(image);
 
-    image = SOIL_load_image((prefix + "_nx.png").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    image = SOIL_load_image((prefix + "_nx.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     SOIL_free_image_data(image);
 
-    image = SOIL_load_image((prefix + "_py.png").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    image = SOIL_load_image((prefix + "_py.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     SOIL_free_image_data(image);
 
-    image = SOIL_load_image((prefix + "_ny.png").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    image = SOIL_load_image((prefix + "_ny.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     SOIL_free_image_data(image);
 
-    image = SOIL_load_image((prefix + "_pz.png").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    image = SOIL_load_image((prefix + "_pz.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     SOIL_free_image_data(image);
 
-    image = SOIL_load_image((prefix + "_nz.png").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    image = SOIL_load_image((prefix + "_nz.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     SOIL_free_image_data(image);
 
