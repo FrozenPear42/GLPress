@@ -20,4 +20,9 @@ void Scene::removeLight(std::shared_ptr<Light> light) {
     mLights.remove(light);
 }
 
+
+void Scene::setSkybox(std::shared_ptr<Skybox> skybox) {
+    mSkybox = skybox;
+}
+
 Scene::Scene() {}

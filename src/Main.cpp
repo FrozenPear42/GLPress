@@ -16,6 +16,9 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     mMainScene = std::make_shared<Scene>();
     mCamera = std::make_shared<Camera>(mCameraPosition, glm::vec3(0, 0, 0));
 
+    mSkybox = std::make_shared<Skybox>("resources/skybox/", "skybox");
+    mMainScene->setSkybox(mSkybox);
+
     auto metalMaterial = std::make_shared<Material>("resources/materials/", "metal");
 
     mBase = std::make_shared<Model>(MeshFactory::createCube(30, 2, 40), metalMaterial);
@@ -58,7 +61,8 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
 
 //    auto light = std::make_shared<DirectLight>(glm::vec3(0.5, 0.5, -0.5), glm::vec3(0.5, 0.7, 0.8), 1.0f);
 //    mSpotLight = std::make_shared<PointLight>(glm::vec3(10, 12, 10), glm::vec3(0.5, 0.7, 0.8), 10.0f, 1.0f);
-    mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(0.5, 0.7, 0.8), glm::radians(12.5f), 10.0f, 1.0f);
+    mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(0.5, 0.7, 0.8),
+                                             glm::radians(12.5f), 10.0f, 1.0f);
     mMainScene->addLight(mSpotLight);
 }
 

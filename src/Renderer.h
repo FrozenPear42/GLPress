@@ -34,6 +34,13 @@ private:
     GLint mLinearLightUniform;
     GLint mQuadraticLightUniform;
 
+
+    GLuint mSkyboxShaderProgram;
+    GLint mSkyboxTextureUniform;
+    GLint mSkyboxProjectionUniform;
+    GLint mSkyboxViewUniform;
+
+
 private:
     void renderModel(std::shared_ptr<Model>& model);
 

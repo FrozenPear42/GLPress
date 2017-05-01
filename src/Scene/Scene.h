@@ -6,13 +6,14 @@
 #include "../Model/Model.h"
 #include "../Light/Light.h"
 #include "../Camera/Camera.h"
+#include "../Material/Skybox.h"
 
 class Scene {
     friend class Renderer;
 private:
     std::list<std::shared_ptr<Model>> mModels;
     std::list<std::shared_ptr<Light>> mLights;
-
+    std::shared_ptr<Skybox> mSkybox;
 public:
     Scene();
 
@@ -24,6 +25,7 @@ public:
 
     void removeLight(std::shared_ptr<Light> light);
 
+    void setSkybox(std::shared_ptr<Skybox> skybox);
 };
 
 

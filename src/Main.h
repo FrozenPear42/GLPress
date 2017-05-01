@@ -38,6 +38,7 @@ private:
 
     std::shared_ptr<SpotLight> mSpotLight;
 
+    std::shared_ptr<Skybox> mSkybox;
 
 public:
     Main();

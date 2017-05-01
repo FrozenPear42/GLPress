@@ -34,12 +34,35 @@ Renderer::Renderer() {
     mLinearLightUniform = glGetUniformLocation(mMainShaderProgram, "light.linear");
     mQuadraticLightUniform = glGetUniformLocation(mMainShaderProgram, "light.quadratic");
 
+    mSkyboxShaderProgram = GLSLProgramCompiler::fromFiles("resources/shaders/skybox.vert",
+                                                          "resources/shaders/skybox.frag");
+    mSkyboxViewUniform = glGetUniformLocation(mSkyboxShaderProgram, "view");
+    mSkyboxProjectionUniform = glGetUniformLocation(mSkyboxShaderProgram, "projection");
+    mSkyboxTextureUniform = glGetUniformLocation(mSkyboxShaderProgram, "skybox");
 }
 
 void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera) {
 
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //Skybox
+    if (scene->mSkybox) {
+        glm::mat4 skyboxView(glm::mat3(camera->mView));
+
+        glDepthMask(GL_FALSE);
+        glUseProgram(mSkyboxShaderProgram);
+        glUniformMatrix4fv(mSkyboxProjectionUniform, 1, GL_FALSE, glm::value_ptr(camera->mProjection));
+        glUniformMatrix4fv(mSkyboxViewUniform, 1, GL_FALSE, glm::value_ptr(skyboxView));
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, scene->mSkybox->mTexture);
+        glUniform1i(mSkyboxTextureUniform, GL_TEXTURE0);
+
+        scene->mSkybox->draw();
+        glDepthMask(GL_TRUE);
+    }
+
 
     glUseProgram(mMainShaderProgram);
 

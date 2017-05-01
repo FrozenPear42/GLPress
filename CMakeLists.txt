@@ -21,7 +21,7 @@ set(SOURCE_FILES
         src/Scene/Group.cpp
         src/Light/PointLight.cpp
         src/Light/DirectLight.cpp
-        src/Light/SpotLight.cpp)
+        src/Light/SpotLight.cpp src/Material/Skybox.cpp src/Material/Skybox.h)
 
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
