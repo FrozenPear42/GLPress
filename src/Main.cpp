@@ -10,7 +10,8 @@
 #include "Main.h"
 #include "Model/MeshFactory.h"
 #include "Utils/Logger.h"
-#include "Animation/ModelAnimationMove.h"
+#include "Animation/AnimationModelMove.h"
+#include "Animation/AnimationSequence.h"
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0f),
                mCameraVAngle(glm::quarter_pi<GLfloat>()), mCameraHAngle(glm::quarter_pi<GLfloat>()),
@@ -67,7 +68,10 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
                                              glm::radians(12.5f), 10.0f, 1.0f);
     mMainScene->addLight(mSpotLight);
 
-    mAnimations.push_back(std::make_unique<ModelAnimationMove>(mPress, mPress->getPosition(), mPress->getPosition() + glm::vec3(0, 2, 0), 2));
+    auto seq = std::make_unique<AnimationSequence>();
+    seq->addToSequence(std::make_unique<AnimationModelMove>(mPress,   glm::vec3(0, 2, 0), 2));
+    seq->addToSequence(std::make_unique<AnimationModelMove>(mPress, - glm::vec3(0, 2, 0), 2));
+    mAnimations.emplace_back(std::move(seq));
     for (auto&& anim : mAnimations)
         anim->animationStart();
 }

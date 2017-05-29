@@ -23,7 +23,7 @@ set(SOURCE_FILES
         src/Light/DirectLight.cpp
         src/Light/SpotLight.cpp
         src/Material/Skybox.cpp
-        src/Animation/Animation.h src/Animation/ModelAnimationMove.cpp src/Animation/ModelAnimationMove.h)
+        src/Animation/Animation.h src/Animation/AnimationModelMove.cpp src/Animation/AnimationModelMove.h src/Animation/AnimationSequence.cpp src/Animation/AnimationSequence.h)
 
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")

@@ -15,16 +15,18 @@ protected:
     Animation(GLfloat duration) : mDuration(duration), mTimeLeft(duration), mRunning(false) {}
 
 public:
-    virtual void animationStep(GLfloat delta) = 0;
+    virtual bool animationStep(GLfloat delta) = 0;
 
     virtual void animationReset() {
         mTimeLeft = mDuration;
         mRunning = false;
     };
 
-    void animationStart() { mRunning = true; }
+    virtual void animationStart() { mRunning = true; }
 
-    void animationStop() { mRunning = false; }
+    virtual void animationStop() { mRunning = false; }
+
+    GLfloat getDuration() { return mDuration; };
 };
 
 
