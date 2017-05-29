@@ -5,9 +5,12 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <chrono>
 #include "Utils/Window.h"
 #include "Main.h"
 #include "Model/MeshFactory.h"
+#include "Utils/Logger.h"
+#include "Animation/ModelAnimationMove.h"
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0f),
                mCameraVAngle(glm::quarter_pi<GLfloat>()), mCameraHAngle(glm::quarter_pi<GLfloat>()),
@@ -57,13 +60,16 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     mMainScene->addModel(mTransportFront);
     mMainScene->addModel(mTransportBack);
     mMainScene->addModel(mTransportTop);
-    mMainScene->addModel(mTransportBottom);
 
 //    auto light = std::make_shared<DirectLight>(glm::vec3(0.5, 0.5, -0.5), glm::vec3(0.5, 0.7, 0.8), 1.0f);
 //    mSpotLight = std::make_shared<PointLight>(glm::vec3(10, 12, 10), glm::vec3(0.5, 0.7, 0.8), 10.0f, 1.0f);
     mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(0.5, 0.7, 0.8),
                                              glm::radians(12.5f), 10.0f, 1.0f);
     mMainScene->addLight(mSpotLight);
+
+    mAnimations.push_back(std::make_unique<ModelAnimationMove>(mPress, mPress->getPosition(), mPress->getPosition() + glm::vec3(0, 2, 0), 2));
+    for (auto&& anim : mAnimations)
+        anim->animationStart();
 }
 
 
@@ -101,6 +107,9 @@ bool Main::nextFrame() {
     mCameraPosition.x = (float) (mCameraDistance * cos(mCameraHAngle));
     mCameraPosition.y = (float) (mCameraDistance * sin(mCameraVAngle));
     mCameraPosition.z = (float) (mCameraDistance * sin(mCameraHAngle));
+
+    for (auto&& anim : mAnimations)
+        anim->animationStep(mDelta);
 
     mCamera->setPosition(mCameraPosition);
     mSpotLight->setTarget(mLightPosition);

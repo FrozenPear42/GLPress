@@ -6,6 +6,7 @@
 #include "Renderer.h"
 #include "Light/PointLight.h"
 #include "Light/SpotLight.h"
+#include "Animation/Animation.h"
 
 class Main {
 private:
@@ -22,6 +23,8 @@ private:
     Renderer mRenderer;
     std::shared_ptr<Scene> mMainScene;
     std::shared_ptr<Camera> mCamera;
+
+    std::vector<std::unique_ptr<Animation>> mAnimations;
 
     std::shared_ptr<Model> mBase;
     std::shared_ptr<Model> mColumnRight;

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(GLPress)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
@@ -21,7 +21,9 @@ set(SOURCE_FILES
         src/Scene/Group.cpp
         src/Light/PointLight.cpp
         src/Light/DirectLight.cpp
-        src/Light/SpotLight.cpp src/Material/Skybox.cpp src/Material/Skybox.h)
+        src/Light/SpotLight.cpp
+        src/Material/Skybox.cpp
+        src/Animation/Animation.h src/Animation/ModelAnimationMove.cpp src/Animation/ModelAnimationMove.h)
 
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
