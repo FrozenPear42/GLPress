@@ -24,6 +24,12 @@ bool AnimationSequence::animationStep(GLfloat delta) {
                 mCurrentAnimation++;
                 mAnimations[mCurrentAnimation]->animationStart();
                 return false;
+            } else if (mLooped) {
+                for (auto&& anim : mAnimations)
+                    anim->animationReset();
+                mCurrentAnimation = 0;
+                mAnimations[mCurrentAnimation]->animationStart();
+                return false;
             } else {
                 mRunning = false;
                 return true;

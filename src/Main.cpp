@@ -34,7 +34,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     mHandler->setPosition(glm::vec3(0, 11.5f, 0));
     mPress = std::make_shared<Model>(MeshFactory::createCylinder(1, 13, 24), metalMaterial);
     mPress->setRotation(glm::vec3(-glm::half_pi<float>(), 0, 0));
-    mPress->setPosition(glm::vec3(0, 10, 0));
+    mPress->setPosition(glm::vec3(0, 9, 0));
 
     mTransportFront = std::make_shared<Model>(MeshFactory::createCylinder(0.5, 8, 24), metalMaterial);
     mTransportFront->setPosition(glm::vec3(0, 2, 15));
@@ -70,8 +70,10 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
 
     auto seq = std::make_unique<AnimationSequence>();
     seq->addToSequence(std::make_unique<AnimationModelMove>(mPress,   glm::vec3(0, 2, 0), 2));
-    seq->addToSequence(std::make_unique<AnimationModelMove>(mPress, - glm::vec3(0, 2, 0), 2));
+    seq->addToSequence(std::make_unique<AnimationModelMove>(mPress, - glm::vec3(0, 2, 0), 0.5));
+    seq->setLooped(true);
     mAnimations.emplace_back(std::move(seq));
+
     for (auto&& anim : mAnimations)
         anim->animationStart();
 }

@@ -14,10 +14,13 @@ class AnimationSequence : public Animation {
 private:
     std::vector<std::unique_ptr<Animation>> mAnimations;
     std::size_t mCurrentAnimation;
+    bool mLooped;
 public:
-    AnimationSequence() : Animation(0), mCurrentAnimation(0) {}
+    AnimationSequence() : Animation(0), mCurrentAnimation(0), mLooped(false) {}
 
     void addToSequence(std::unique_ptr<Animation>&& animation);
+
+    void setLooped(bool looped) { mLooped = looped; };
 
     virtual void animationStart();
 
