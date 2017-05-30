@@ -7,13 +7,12 @@
 
 
 #include <vector>
-#include <bits/shared_ptr.h>
-#include <bits/unique_ptr.h>
+#include <memory>
 #include "Animation.h"
 
 class AnimationConcurrent : public Animation {
 private:
-    std::vector<std::shared_ptr<Animation>> mAnimations;
+    std::vector<std::unique_ptr<Animation>> mAnimations;
 public:
     AnimationConcurrent() : Animation(0) {}
 

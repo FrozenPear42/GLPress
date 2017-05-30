@@ -5,7 +5,7 @@
 #include "../Utils/GLSLProgramCompiler.h"
 
 Material::Material(std::string directory, std::string name) {
-    mDiffuseMap = Texture::loadFromFile(directory + name + "_diff.png");
-    mNormalMap = Texture::loadFromFile(directory + name + "_normal.png");
+    mDiffuseMap = Texture::loadFromFile(directory + name + "_diff.jpg");
+    mNormalMap = Texture::loadFromFile(directory + name + "_normal.jpg");
 }
 

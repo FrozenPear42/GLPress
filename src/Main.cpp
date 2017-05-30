@@ -5,13 +5,13 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <chrono>
 #include "Utils/Window.h"
 #include "Main.h"
 #include "Model/MeshFactory.h"
 #include "Utils/Logger.h"
 #include "Animation/AnimationModelMove.h"
 #include "Animation/AnimationSequence.h"
+#include "Light/DirectLight.h"
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0f),
                mCameraVAngle(glm::quarter_pi<GLfloat>()), mCameraHAngle(glm::quarter_pi<GLfloat>()),
@@ -23,7 +23,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     mSkybox = std::make_shared<Skybox>("resources/skybox/", "skybox");
     mMainScene->setSkybox(mSkybox);
 
-    auto metalMaterial = std::make_shared<Material>("resources/materials/", "metal");
+    auto metalMaterial = std::make_shared<Material>("resources/materials/", "rusty");
 
     mBase = std::make_shared<Model>(MeshFactory::createCube(30, 2, 40), metalMaterial);
     mColumnLeft = std::make_shared<Model>(MeshFactory::createCube(3, 10, 3), metalMaterial);
@@ -62,15 +62,16 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     mMainScene->addModel(mTransportBack);
     mMainScene->addModel(mTransportTop);
 
-//    auto light = std::make_shared<DirectLight>(glm::vec3(0.5, 0.5, -0.5), glm::vec3(0.5, 0.7, 0.8), 1.0f);
+    auto light = std::make_shared<DirectLight>(glm::vec3(0.5, -0.5, -0.5), glm::vec3(0.5, 0.7, 0.8), 1.0f);
 //    mSpotLight = std::make_shared<PointLight>(glm::vec3(10, 12, 10), glm::vec3(0.5, 0.7, 0.8), 10.0f, 1.0f);
     mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(0.5, 0.7, 0.8),
                                              glm::radians(12.5f), 10.0f, 1.0f);
-    mMainScene->addLight(mSpotLight);
+    mMainScene->addLight(light);
+
 
     auto seq = std::make_unique<AnimationSequence>();
-    seq->addToSequence(std::make_unique<AnimationModelMove>(mPress,   glm::vec3(0, 2, 0), 2));
-    seq->addToSequence(std::make_unique<AnimationModelMove>(mPress, - glm::vec3(0, 2, 0), 0.5));
+    seq->addToSequence(std::make_unique<AnimationModelMove>(mPress, glm::vec3(0, 2, 0), 2));
+    seq->addToSequence(std::make_unique<AnimationModelMove>(mPress, -glm::vec3(0, 2, 0), 0.5));
     seq->setLooped(true);
     mAnimations.emplace_back(std::move(seq));
 

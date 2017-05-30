@@ -16,9 +16,13 @@ private:
     std::shared_ptr<Texture> mNormalMap;
     std::shared_ptr<Texture> mSpecularMap;
     GLfloat mShiness;
+    GLfloat mOpacity;
 public:
-
     Material(std::string directory, std::string name);
+
+    GLfloat getOpacity() { return mOpacity; }
+
+    void setOpacity(GLfloat opacity) { mOpacity = opacity; }
 };
 
 #endif //GKOM_INTRO_MATERIAL_H
