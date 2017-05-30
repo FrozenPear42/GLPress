@@ -1,7 +1,6 @@
 #ifndef GLPRESS_ANIMATION_H
 #define GLPRESS_ANIMATION_H
 
-#include <bits/shared_ptr.h>
 #include <GL/glew.h>
 
 class Animation {
