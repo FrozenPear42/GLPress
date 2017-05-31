@@ -33,6 +33,3 @@ void Model::setRotation(glm::vec3 rotation) {
     recalculateTransform();
 }
 
-glm::vec3 Model::getPosition() {
-    return mPosition;
-}

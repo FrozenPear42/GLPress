@@ -13,11 +13,15 @@ public:
 
     Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
 
+    glm::vec3 getPosition() { return mPosition; };
+
     void setPosition(glm::vec3 position);
 
-    glm::vec3 getPosition();
-
     void setRotation(glm::vec3 rotation);
+
+    std::shared_ptr<Material> getMaterial() { return mMaterial; }
+
+    void setMaterial(std::shared_ptr<Material>& material) { mMaterial = material; }
 
 private:
     void recalculateTransform();

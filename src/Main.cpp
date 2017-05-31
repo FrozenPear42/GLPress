@@ -62,6 +62,8 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     mMainScene->addModel(mTransportBack);
     mMainScene->addModel(mTransportTop);
 
+//     mMainScene->addModel(std::make_shared<Model>(MeshFactory::createCylinder(10, 10, 20), metalMaterial));
+
     auto light = std::make_shared<DirectLight>(glm::vec3(0.5, -0.5, -0.5), glm::vec3(0.5, 0.7, 0.8), 1.0f);
 //    mSpotLight = std::make_shared<PointLight>(glm::vec3(10, 12, 10), glm::vec3(0.5, 0.7, 0.8), 10.0f, 1.0f);
     mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(0.5, 0.7, 0.8),

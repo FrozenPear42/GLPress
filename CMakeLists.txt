@@ -23,7 +23,7 @@ set(SOURCE_FILES
         src/Light/DirectLight.cpp
         src/Light/SpotLight.cpp
         src/Material/Skybox.cpp
-        src/Animation/Animation.h src/Animation/AnimationModelMove.cpp src/Animation/AnimationModelMove.h src/Animation/AnimationSequence.cpp src/Animation/AnimationSequence.h src/Animation/AnimationDelay.cpp src/Animation/AnimationDelay.h src/Animation/AnimationConcurrent.cpp src/Animation/AnimationConcurrent.h src/Animation/AnimationMaterialOpacity.cpp src/Animation/AnimationMaterialOpacity.h)
+        src/Animation/Animation.h src/Animation/AnimationModelMove.cpp src/Animation/AnimationModelMove.h src/Animation/AnimationSequence.cpp src/Animation/AnimationSequence.h src/Animation/AnimationDelay.cpp src/Animation/AnimationDelay.h src/Animation/AnimationConcurrent.cpp src/Animation/AnimationConcurrent.h src/Animation/AnimationMaterialOpacity.cpp src/Animation/AnimationMaterialOpacity.h src/Animation/AnimationModelMaterialSwap.cpp src/Animation/AnimationModelMaterialSwap.h)
 
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")

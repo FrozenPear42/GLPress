@@ -4,7 +4,7 @@
 #include "Texture.h"
 #include "../Utils/GLSLProgramCompiler.h"
 
-Material::Material(std::string directory, std::string name) {
+Material::Material(std::string directory, std::string name) : mOpacity(1.0f) {
     mDiffuseMap = Texture::loadFromFile(directory + name + "_diff.jpg");
     mNormalMap = Texture::loadFromFile(directory + name + "_normal.jpg");
 }
