@@ -12,10 +12,13 @@
 #include "Animation/AnimationModelMove.h"
 #include "Animation/AnimationSequence.h"
 #include "Light/DirectLight.h"
+#include "Animation/AnimationDelay.h"
+#include "Animation/AnimationMaterialOpacity.h"
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0f),
-               mCameraVAngle(glm::quarter_pi<GLfloat>()), mCameraHAngle(glm::quarter_pi<GLfloat>()),
-               mCameraDistance(50), mLightPosition(glm::vec3(0, 0, 0)) {
+               mCameraDistance(50), mCameraVAngle(glm::quarter_pi<GLfloat>()),
+               mCameraHAngle(glm::quarter_pi<GLfloat>()),
+               mLightPosition(glm::vec3(0, 0, 0)) {
 
     mMainScene = std::make_shared<Scene>();
     mCamera = std::make_shared<Camera>(mCameraPosition, glm::vec3(0, 0, 0));
@@ -26,12 +29,16 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     auto metalMaterial = std::make_shared<Material>("resources/materials/", "rusty");
 
     mBase = std::make_shared<Model>(MeshFactory::createCube(30, 2, 40), metalMaterial);
+
     mColumnLeft = std::make_shared<Model>(MeshFactory::createCube(3, 10, 3), metalMaterial);
-    mColumnRight = std::make_shared<Model>(MeshFactory::createCube(3, 10, 3), metalMaterial);
     mColumnLeft->setPosition(glm::vec3(-10, 5, 0));
+
+    mColumnRight = std::make_shared<Model>(MeshFactory::createCube(3, 10, 3), metalMaterial);
     mColumnRight->setPosition(glm::vec3(10, 5, 0));
+
     mHandler = std::make_shared<Model>(MeshFactory::createCube(23, 3, 3), metalMaterial);
     mHandler->setPosition(glm::vec3(0, 11.5f, 0));
+
     mPress = std::make_shared<Model>(MeshFactory::createCylinder(1, 13, 24), metalMaterial);
     mPress->setRotation(glm::vec3(-glm::half_pi<float>(), 0, 0));
     mPress->setPosition(glm::vec3(0, 9, 0));
@@ -52,6 +59,12 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     mTransportBottom->setRotation(glm::vec3(glm::half_pi<float>(), 0, 0));
     mTransportBottom->setPosition(glm::vec3(0, 1.5, 0));
 
+    for (int i = 0; i < 1; ++i) {
+        auto coin = std::make_shared<Model>(MeshFactory::createCylinder(1, 0.5, 24), metalMaterial);
+        coin->setRotation(glm::vec3(-glm::half_pi<float>(), 0, 0));
+        coin->setPosition(glm::vec3(0, 3, 8 * (i - 1.5)));
+        mCoins.emplace_back(coin);
+    }
 
     mMainScene->addModel(mBase);
     mMainScene->addModel(mColumnLeft);
@@ -62,9 +75,12 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     mMainScene->addModel(mTransportBack);
     mMainScene->addModel(mTransportTop);
 
+    for (auto&& coin : mCoins)
+        mMainScene->addModel(coin);
+
 //     mMainScene->addModel(std::make_shared<Model>(MeshFactory::createCylinder(10, 10, 20), metalMaterial));
 
-    auto light = std::make_shared<DirectLight>(glm::vec3(0.5, -0.5, -0.5), glm::vec3(0.5, 0.7, 0.8), 1.0f);
+    auto light = std::make_shared<DirectLight>(glm::vec3(0.5, -0.5, -0.5), glm::vec3(0.5, 0.7, 0.8), 4.0f);
 //    mSpotLight = std::make_shared<PointLight>(glm::vec3(10, 12, 10), glm::vec3(0.5, 0.7, 0.8), 10.0f, 1.0f);
     mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(0.5, 0.7, 0.8),
                                              glm::radians(12.5f), 10.0f, 1.0f);
@@ -75,7 +91,16 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"), mDelta(0.0f), mLastFrame(0.0
     seq->addToSequence(std::make_unique<AnimationModelMove>(mPress, glm::vec3(0, 2, 0), 2));
     seq->addToSequence(std::make_unique<AnimationModelMove>(mPress, -glm::vec3(0, 2, 0), 0.5));
     seq->setLooped(true);
+
+    mCoins[0]->setPosition(glm::vec3(0, 6, -12));
+    auto coinAnimation = std::make_unique<AnimationSequence>();
+    coinAnimation->addToSequence(std::make_unique<AnimationModelMove>(mCoins[0], glm::vec3(0, -3, 0), 1));
+    coinAnimation->addToSequence(std::make_unique<AnimationModelMove>(mCoins[0], glm::vec3(0, 0, 12), 3));
+    coinAnimation->addToSequence(std::make_unique<AnimationDelay>(3));
+    coinAnimation->addToSequence(std::make_unique<AnimationModelMove>(mCoins[0], glm::vec3(0, 0, 12), 3));
+
     mAnimations.emplace_back(std::move(seq));
+    mAnimations.emplace_back(std::move(coinAnimation));
 
     for (auto&& anim : mAnimations)
         anim->animationStart();

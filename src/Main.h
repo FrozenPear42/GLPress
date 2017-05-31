@@ -12,13 +12,14 @@ class Main {
 private:
     Window mWindow;
     glm::vec3 mCameraPosition;
-    glm::vec3 mLightPosition;
-
     GLfloat mDelta;
+
     GLfloat mLastFrame;
+    GLfloat mCameraDistance;
     GLfloat mCameraVAngle;
     GLfloat mCameraHAngle;
-    GLfloat mCameraDistance;
+
+    glm::vec3 mLightPosition;
 
     Renderer mRenderer;
     std::shared_ptr<Scene> mMainScene;
@@ -38,6 +39,8 @@ private:
     std::shared_ptr<Model> mTransportBottom;
 
     std::shared_ptr<Model> mPress;
+
+    std::vector<std::shared_ptr<Model>> mCoins;
 
     std::shared_ptr<SpotLight> mSpotLight;
 
