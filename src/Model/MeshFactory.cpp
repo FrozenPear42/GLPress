@@ -8,23 +8,25 @@
 #include "MeshFactory.h"
 #include "../Utils/Logger.h"
 
-
-
-
-std::shared_ptr<Mesh> MeshFactory::createPlane(GLfloat w, GLfloat d) {
+std::shared_ptr<Mesh> MeshFactory::createPlane(GLfloat w, GLfloat d, GLfloat uScale, GLfloat vScale) {
     std::vector<Vertex> vertices;
-    std::vector<GLuint> indices{0,1,2,1,3,2};
+    std::vector<GLuint> indices{0, 1, 2, 1, 3, 2};
     vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * d, 0), glm::vec3(0, 0, 1), glm::vec2(0, 0));
-    vertices.emplace_back(glm::vec3(0.5 * w, -0.5 * d, 0), glm::vec3(0, 0, 1), glm::vec2(1, 0));
-    vertices.emplace_back(glm::vec3(-0.5 * w, 0.5 * d, 0), glm::vec3(0, 0, 1), glm::vec2(0, 1));
-    vertices.emplace_back(glm::vec3(0.5 * w, 0.5 * d, 0), glm::vec3(0, 0, 1), glm::vec2(1, 1));
-
+    vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * d, 0), glm::vec3(0, 0, 1), glm::vec2(uScale, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * d, 0), glm::vec3(0, 0, 1), glm::vec2(0, vScale));
+    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * d, 0), glm::vec3(0, 0, 1), glm::vec2(uScale, vScale));
 
     return std::make_shared<Mesh>(std::move(vertices), std::move(indices));
 }
 
+std::shared_ptr<Mesh> MeshFactory::createPlane(GLfloat w, GLfloat d) {
+    return createPlane(w, d, 1, 1);
+}
 
-std::shared_ptr<Mesh> MeshFactory::createCube(GLfloat w, GLfloat h, GLfloat d) {
+
+std::shared_ptr<Mesh> MeshFactory::createCube(GLfloat w, GLfloat h, GLfloat d,
+                                              GLfloat suScale, GLfloat svScale,
+                                              GLfloat cuScale, GLfloat cvScale) {
 
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices{ 0,  1,  2,
@@ -39,32 +41,55 @@ std::shared_ptr<Mesh> MeshFactory::createCube(GLfloat w, GLfloat h, GLfloat d) {
                                 18, 17, 19,
                                 20, 21, 22,
                                 22, 21, 23,};
+
+    GLfloat fU = 1.0f;
+    GLfloat fV = 1.0f;
+    GLfloat bU = 1.0f;
+    GLfloat bV = 1.0f;
+    GLfloat tU = 1.0f;
+    GLfloat tV = 1.0f;
+    GLfloat btU = 1.0f;
+    GLfloat btV = 1.0f;
+    GLfloat rU = 1.0f;
+    GLfloat rV = 1.0f;
+    GLfloat lU = 1.0f;
+    GLfloat lV = 1.0f;
+
     vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h,  0.5 * d), glm::vec3( 0,  0,  1), glm::vec2(0, 0));
-    vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * h,  0.5 * d), glm::vec3( 0,  0,  1), glm::vec2(1, 0));
-    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h,  0.5 * d), glm::vec3( 0,  0,  1), glm::vec2(0, 1));
-    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * h,  0.5 * d), glm::vec3( 0,  0,  1), glm::vec2(1, 1));
-    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h, -0.5 * d), glm::vec3( 0,  0, -1), glm::vec2(1, 1));
-    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * h, -0.5 * d), glm::vec3( 0,  0, -1), glm::vec2(0, 1));
-    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h, -0.5 * d), glm::vec3( 0,  0, -1), glm::vec2(1, 0));
+    vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * h,  0.5 * d), glm::vec3( 0,  0,  1), glm::vec2(fU, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h,  0.5 * d), glm::vec3( 0,  0,  1), glm::vec2(0, fV));
+    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * h,  0.5 * d), glm::vec3( 0,  0,  1), glm::vec2(fU, fV));
+
+    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h, -0.5 * d), glm::vec3( 0,  0, -1), glm::vec2(bU, bV));
+    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * h, -0.5 * d), glm::vec3( 0,  0, -1), glm::vec2(0, bV));
+    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h, -0.5 * d), glm::vec3( 0,  0, -1), glm::vec2(bU, 0));
     vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * h, -0.5 * d), glm::vec3( 0,  0, -1), glm::vec2(0, 0));
+
     vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h,  0.5 * d), glm::vec3( 0,  1,  0), glm::vec2(0, 0));
-    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * h,  0.5 * d), glm::vec3( 0,  1,  0), glm::vec2(1, 0));
-    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h, -0.5 * d), glm::vec3( 0,  1,  0), glm::vec2(0, 1));
-    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * h, -0.5 * d), glm::vec3( 0,  1,  0), glm::vec2(1, 1));
+    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * h,  0.5 * d), glm::vec3( 0,  1,  0), glm::vec2(tU, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h, -0.5 * d), glm::vec3( 0,  1,  0), glm::vec2(0, tV));
+    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * h, -0.5 * d), glm::vec3( 0,  1,  0), glm::vec2(tU, tV));
+
     vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h, -0.5 * d), glm::vec3( 0, -1,  0), glm::vec2(0, 0));
-    vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * h, -0.5 * d), glm::vec3( 0, -1,  0), glm::vec2(1, 0));
-    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h,  0.5 * d), glm::vec3( 0, -1,  0), glm::vec2(0, 1));
-    vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * h,  0.5 * d), glm::vec3( 0, -1,  0), glm::vec2(1, 1));
+    vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * h, -0.5 * d), glm::vec3( 0, -1,  0), glm::vec2(btU, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h,  0.5 * d), glm::vec3( 0, -1,  0), glm::vec2(0, btV));
+    vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * h,  0.5 * d), glm::vec3( 0, -1,  0), glm::vec2(btU, btV));
+
     vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * h,  0.5 * d), glm::vec3( 1,  0,  0), glm::vec2(0, 0));
-    vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * h, -0.5 * d), glm::vec3( 1,  0,  0), glm::vec2(1, 0));
-    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * h,  0.5 * d), glm::vec3( 1,  0,  0), glm::vec2(0, 1));
-    vertices.emplace_back(glm::vec3 (0.5 * w,  0.5 * h, -0.5 * d), glm::vec3( 1,  0,  0), glm::vec2(1, 1));
+    vertices.emplace_back(glm::vec3( 0.5 * w, -0.5 * h, -0.5 * d), glm::vec3( 1,  0,  0), glm::vec2(rU, 0));
+    vertices.emplace_back(glm::vec3( 0.5 * w,  0.5 * h,  0.5 * d), glm::vec3( 1,  0,  0), glm::vec2(0, rV));
+    vertices.emplace_back(glm::vec3 (0.5 * w,  0.5 * h, -0.5 * d), glm::vec3( 1,  0,  0), glm::vec2(rU, rV));
+
     vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h, -0.5 * d), glm::vec3(-1,  0,  0), glm::vec2(0, 0));
-    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h,  0.5 * d), glm::vec3(-1,  0,  0), glm::vec2(1, 0));
-    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h, -0.5 * d), glm::vec3(-1,  0,  0), glm::vec2(0, 1));
-    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h,  0.5 * d), glm::vec3(-1,  0,  0), glm::vec2(1, 1));
+    vertices.emplace_back(glm::vec3(-0.5 * w, -0.5 * h,  0.5 * d), glm::vec3(-1,  0,  0), glm::vec2(lU, 0));
+    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h, -0.5 * d), glm::vec3(-1,  0,  0), glm::vec2(0, lV));
+    vertices.emplace_back(glm::vec3(-0.5 * w,  0.5 * h,  0.5 * d), glm::vec3(-1,  0,  0), glm::vec2(lU, lV));
 
     return std::make_shared<Mesh>(std::move(vertices), std::move(indices));
+}
+
+std::shared_ptr<Mesh> MeshFactory::createCube(GLfloat w, GLfloat h, GLfloat d) {
+    return createCube(w, h, d, 1, 1, 1, 1);
 }
 
 std::shared_ptr<Mesh> MeshFactory::createCylinder(GLfloat r, GLfloat h, GLuint sides) {
@@ -108,7 +133,7 @@ std::shared_ptr<Mesh> MeshFactory::createCylinder(GLfloat r, GLfloat h, GLuint s
         float x = r * std::cos(deltaAngle * i);
         float y = r * std::sin(deltaAngle * i);
 
-        vertices.emplace_back(glm::vec3(x, y, -h / 2), glm::vec3(0, 0, -1), glm::vec2(x/r, y/r));
+        vertices.emplace_back(glm::vec3(x, y, -h / 2), glm::vec3(0, 0, -1), glm::vec2((x/r + 1)/2, (y/r+1)/2));
     }
 
     for (GLuint i = 1; i < sides + 1; ++i) {
@@ -123,7 +148,7 @@ std::shared_ptr<Mesh> MeshFactory::createCylinder(GLfloat r, GLfloat h, GLuint s
         float x = r * std::cos(deltaAngle * i);
         float y = r * std::sin(deltaAngle * i);
 
-        vertices.emplace_back(glm::vec3(x, y, h / 2), glm::vec3(0, 0, 1), glm::vec2(x/r, y/r));
+        vertices.emplace_back(glm::vec3(x, y, h / 2), glm::vec3(0, 0, 1), glm::vec2((-x/r + 1)/2, (y/r+1)/2));
     }
 
     for (GLuint i = 1; i < sides + 1; ++i) {

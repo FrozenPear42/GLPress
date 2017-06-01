@@ -4,7 +4,7 @@
 
 #include "AnimationSequence.h"
 
-void AnimationSequence::addToSequence(std::unique_ptr<Animation>&& animation) {
+void AnimationSequence::addToSequence(std::shared_ptr<Animation>&& animation) {
     mDuration += animation->getDuration();
     mAnimations.emplace_back(std::move(animation));
 }

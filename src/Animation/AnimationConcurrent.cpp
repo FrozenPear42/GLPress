@@ -4,7 +4,7 @@
 
 #include "AnimationConcurrent.h"
 
-void AnimationConcurrent::addAnimation(std::unique_ptr<Animation>&& animation) {
+void AnimationConcurrent::addAnimation(std::shared_ptr<Animation>& animation) {
     mAnimations.emplace_back(std::move(animation));
     mDuration = std::max(animation->getDuration(), mDuration);
 }

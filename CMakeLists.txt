@@ -5,25 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
-set(SOURCE_FILES
-        src/Utils/GLSLProgramCompiller.cpp
-        src/Main.cpp
-        src/Utils/Window.cpp
-        src/Material/Material.cpp
-        src/Model/Mesh.cpp
-        src/Model/Model.cpp
-        src/Light/Light.cpp
-        src/Material/Texture.cpp
-        src/Scene/Scene.cpp
-        src/Camera/Camera.cpp
-        src/Model/MeshFactory.cpp
-        src/Renderer.cpp
-        src/Scene/Group.cpp
-        src/Light/PointLight.cpp
-        src/Light/DirectLight.cpp
-        src/Light/SpotLight.cpp
-        src/Material/Skybox.cpp
-        src/Animation/Animation.h src/Animation/AnimationModelMove.cpp src/Animation/AnimationModelMove.h src/Animation/AnimationSequence.cpp src/Animation/AnimationSequence.h src/Animation/AnimationDelay.cpp src/Animation/AnimationDelay.h src/Animation/AnimationConcurrent.cpp src/Animation/AnimationConcurrent.h src/Animation/AnimationMaterialOpacity.cpp src/Animation/AnimationMaterialOpacity.h src/Animation/AnimationModelMaterialSwap.cpp src/Animation/AnimationModelMaterialSwap.h)
+file(GLOB_RECURSE SOURCE_FILES "src/*")
 
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")

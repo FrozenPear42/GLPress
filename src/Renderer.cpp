@@ -119,18 +119,24 @@ void Renderer::renderModel(std::shared_ptr<Model>& model) {
 
     glUniformMatrix4fv(mModelUniform, 1, GL_FALSE, glm::value_ptr(model->mTransform));
 
+
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, model->mMaterial->mDiffuseMap->getID());
+    if (model->mMaterial->mMapping)
+        glBindTexture(GL_TEXTURE_2D, model->mMaterial->mDiffuseMap->getID());
+    else
+        glBindTexture(GL_TEXTURE_2D, 0);
     glUniform1i(mDiffuseMapUniform, GL_TEXTURE0);
 
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, model->mMaterial->mNormalMap->getID());
-    glUniform1i(mNormalMapUniform, GL_TEXTURE1);
+//    glActiveTexture(GL_TEXTURE1);
+//    glBindTexture(GL_TEXTURE_2D, model->mMaterial->mNormalMap->getID());
+//    glUniform1i(mNormalMapUniform, GL_TEXTURE1);
 
 //    glActiveTexture(GL_TEXTURE2);
 //    glBindTexture(GL_TEXTURE_2D, model->mMaterial->mSpecularMap->getID());
 //    glUniform1i(mSpecularMapUniform, GL_TEXTURE2);
 
-    model->mMesh->draw();
+    model->mMesh->
+            draw();
+
 }
 
