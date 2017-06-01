@@ -102,5 +102,6 @@ vec4 spotLight() {
 void main()
 {
     color = lightType();
-    //color = vec4(oPosition, 1.0f);
+//    color = vec4(oPosition, 1.0f);
+//    color = vec4(oTexCoord, 1.0, 1.0f);
 }

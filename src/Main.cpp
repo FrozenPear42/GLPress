@@ -13,6 +13,7 @@
 #include "Animation/AnimationSequence.h"
 #include "Light/DirectLight.h"
 #include "Animation/AnimationDelay.h"
+#include "Model/CylinderBuilder.h"
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                mDelta(0.0f),
@@ -44,7 +45,12 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     mHandler = std::make_shared<Model>(MeshFactory::createCube(23, 3, 5, 10, 1, 1, 1), metalMaterial);
     mHandler->setPosition(glm::vec3(0, 14.0f, 0));
 
-    mPress = std::make_shared<Model>(MeshFactory::createCylinder(2, 16, 32), metalMaterial);
+    mPress = std::make_shared<Model>(CylinderBuilder()
+                                             .radius(2)
+                                             .height(16)
+                                             .sides(32)
+                                             .wrap(glm::vec2(0, 0),
+                                                   glm::vec2(1, 1)).build(), metalMaterial);
     mPress->setRotation(glm::vec3(-halfPI, 0, 0));
     mPress->setPosition(glm::vec3(0.0f, 11.0f, 0.0f));
 
