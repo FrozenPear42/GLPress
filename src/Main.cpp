@@ -14,6 +14,7 @@
 #include "Light/DirectLight.h"
 #include "Animation/AnimationDelay.h"
 #include "Model/CylinderBuilder.h"
+#include "Model/CubeBuilder.h"
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                mDelta(0.0f),
@@ -42,15 +43,26 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     mColumnRight = std::make_shared<Model>(MeshFactory::createCube(3, 12, 5), metalMaterial);
     mColumnRight->setPosition(glm::vec3(10, 6.5, 0));
 
-    mHandler = std::make_shared<Model>(MeshFactory::createCube(23, 3, 5, 10, 1, 1, 1), metalMaterial);
+    mHandler = std::make_shared<Model>(CubeBuilder()
+                                               .width(23)
+                                               .height(3)
+                                               .depth(5)
+                                               .frontMap(glm::vec2(0, 0), glm::vec2(10, 1))
+                                               .topMap(glm::vec2(0, 0), glm::vec2(10, 1))
+                                               .backMap(glm::vec2(0, 0), glm::vec2(10, 1))
+                                               .bottomMap(glm::vec2(0, 0), glm::vec2(10, 1))
+                                               .leftMap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                               .rightMap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                               .build(),
+                                       metalMaterial);
     mHandler->setPosition(glm::vec3(0, 14.0f, 0));
 
     mPress = std::make_shared<Model>(CylinderBuilder()
                                              .radius(2)
                                              .height(16)
                                              .sides(32)
-                                             .wrap(glm::vec2(0, 0),
-                                                   glm::vec2(1, 1)).build(), metalMaterial);
+                                             .wrap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                             .build(), metalMaterial);
     mPress->setRotation(glm::vec3(-halfPI, 0, 0));
     mPress->setPosition(glm::vec3(0.0f, 11.0f, 0.0f));
 
