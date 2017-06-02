@@ -33,11 +33,14 @@ uniform float opacity;
 uniform float time;
 
 uniform Light light;
+uniform vec2 textureDisplacement;
+
+vec2 realTextCoord;
 
 
 subroutine (lighting)
 vec3 directLight() {
-    vec3 diffuse = texture2D(diffuseMap, oTexCoord).rgb;
+    vec3 diffuse = texture2D(diffuseMap, realTextCoord).rgb;
     vec3 normal = oNormal;//normalize(texture2D(normalMap, oTexCoord).rgb);
 
     vec3 lightDir = normalize(-light.direction);
@@ -53,7 +56,7 @@ vec3 pointLight() {
     float distance = length(light.position - oPosition);
     float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
-    vec3 diffuse = texture2D(diffuseMap, oTexCoord).rgb;
+    vec3 diffuse = texture2D(diffuseMap, realTextCoord).rgb;
     vec3 normal = oNormal;//normalize(texture2D(normalMap, oTexCoord).rgb);
 
     vec3 lightDir = normalize(light.position - oPosition);
@@ -70,7 +73,7 @@ vec3 spotLight() {
     float distance = length(light.position - oPosition);
     float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
-    vec3 diffuse = texture2D(diffuseMap, oTexCoord).rgb;
+    vec3 diffuse = texture2D(diffuseMap, realTextCoord).rgb;
     vec3 normal = oNormal;//normalize(texture2D(normalMap, oTexCoord).rgb);
 
     vec3 lightDir = normalize(light.position - oPosition);
@@ -90,6 +93,7 @@ vec3 spotLight() {
 
 void main()
 {
+    realTextCoord = oTexCoord + textureDisplacement;
     color = vec4(lightType(), opacity);
 //    color = vec4(oPosition, 1.0f);
 //    color = vec4(oTexCoord, 1.0, 1.0f);

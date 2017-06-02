@@ -26,6 +26,7 @@ bool AnimationModelMove::animationStep(GLfloat delta) {
 
 void AnimationModelMove::animationReset() {
     Animation::animationReset();
+    mModel->setPosition(mBegin);
 }
 
 void AnimationModelMove::animationStart() {

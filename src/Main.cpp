@@ -18,6 +18,8 @@
 #include "Model/PlaneBuilder.h"
 #include "Animation/AnimationModelMaterialSwap.h"
 #include "Animation/AnimationMaterialOpacity.h"
+#include "Animation/AnimationConcurrent.h"
+#include "Animation/AnimationTextureDisplacement.h"
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                mDelta(0.0f),
@@ -38,9 +40,8 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     auto conveyorMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/conveyor.png"));
     auto concreteMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/concrete.jpg"));
 
-    auto coinBlankMaterial   = std::make_shared<Material>(Texture::loadFromFile("resources/materials/coin_blank.jpg"));
+    auto coinBlankMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/coin_blank.jpg"));
     auto coinPressedMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/coin.jpg"));
-
 
 
     auto halfPI = glm::half_pi<float>();
@@ -109,7 +110,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                                              .build(),
                                      brushedMaterial);
     mPress->setRotation(glm::vec3(-halfPI, 0, 0));
-    mPress->setPosition(glm::vec3(0.0f, 11.0f, 0.0f));
+    mPress->setPosition(glm::vec3(0.0f, 12.7f, 0.0f));
 
     mTransportFront = std::make_shared<Model>(CylinderBuilder()
                                                       .radius(0.5)
@@ -164,7 +165,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                                                     .build(),
                                             coinBlankMaterial);
         coin->setRotation(glm::vec3(-halfPI, 0, 0));
-        coin->setPosition(glm::vec3(0, 2.6, 12 * (i - 1.5)));
+        coin->setPosition(glm::vec3(0, 6, -12));
         mCoins.emplace_back(coin);
     }
 
@@ -183,28 +184,49 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
 
     auto light = std::make_shared<DirectLight>(glm::vec3(0.5, -0.5, -0.5), glm::vec3(1.0, 1.0, 1.0), 1.2f);
 //    mSpotLight = std::make_shared<PointLight>(glm::vec3(10, 12, 10), glm::vec3(0.5, 0.7, 0.8), 10.0f, 1.0f);
-    mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(0.5, 0.7, 0.8),
-                                             glm::radians(12.5f), 10.0f, 1.0f);
+    mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(1.0, 1.0, 1.0),
+                                             glm::radians(12.5f), 10.0f, 2.0f);
     mMainScene->addLight(light);
 
 
-    auto seq = std::make_unique<AnimationSequence>();
-    seq->addToSequence(std::make_shared<AnimationModelMove>(mPress, glm::vec3(0, 2, 0), 2));
-    seq->addToSequence(std::make_shared<AnimationModelMove>(mPress, -glm::vec3(0, 2, 0), 0.5));
-    seq->setLooped(true);
+    coinBlankMaterial->setOpacity(0.0);
 
-    mCoins[0]->setPosition(glm::vec3(0, 6, -12));
-    auto coinAnimation = std::make_unique<AnimationSequence>();
-    coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, -3.4, 0), 1));
-    coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, 0, 12), 3));
-    coinAnimation->addToSequence(std::make_shared<AnimationDelay>(3));
-    coinAnimation->addToSequence(std::make_shared<AnimationModelMaterialSwap>(mCoins[0], coinPressedMaterial));
-    coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, 0, 12), 3));
-    coinAnimation->addToSequence(std::make_shared<AnimationMaterialOpacity>(coinPressedMaterial, 3, 0.0f));
+    for (GLuint i = 0; i < mCoins.size(); ++i) {
+
+        auto coinAnimation = std::make_unique<AnimationSequence>();
+
+        coinAnimation->addToSequence(std::make_shared<AnimationDelay>(5 * i));
+        coinAnimation->addToSequence(std::make_shared<AnimationMaterialOpacity>(coinBlankMaterial, 1, 1.0f));
+        coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[i], glm::vec3(0, -3.4, 0), 1));
 
 
-    mAnimations.emplace_back(std::move(seq));
-    mAnimations.emplace_back(std::move(coinAnimation));
+        auto firstTransportAnimation = std::make_shared<AnimationConcurrent>();
+        firstTransportAnimation->addAnimation(std::make_shared<AnimationModelMove>(mCoins[i], glm::vec3(0, 0, 12), 3));
+        firstTransportAnimation->addAnimation(std::make_shared<AnimationTextureDisplacement>(conveyorMaterial, glm::vec2(0, -2), 3));
+
+        coinAnimation->addToSequence(std::move(firstTransportAnimation));
+
+
+        auto pressSequence = std::make_shared<AnimationSequence>();
+        pressSequence->addToSequence(std::make_shared<AnimationModelMove>(mPress, -glm::vec3(0, 2, 0), 0.3));
+        pressSequence->addToSequence(std::make_shared<AnimationDelay>(0.3));
+        pressSequence->addToSequence(std::make_shared<AnimationModelMaterialSwap>(mCoins[i], coinPressedMaterial));
+        pressSequence->addToSequence(std::make_shared<AnimationModelMove>(mPress, glm::vec3(0, 2, 0), 1.6));
+
+        coinAnimation->addToSequence(std::move(pressSequence));
+
+        auto secondTransportAnimation = std::make_shared<AnimationConcurrent>();
+        secondTransportAnimation->addAnimation(std::make_shared<AnimationModelMove>(mCoins[i], glm::vec3(0, 0, 12), 3));
+        secondTransportAnimation->addAnimation(std::make_shared<AnimationTextureDisplacement>(conveyorMaterial, glm::vec2(0, -2), 3));
+
+        coinAnimation->addToSequence(std::move(secondTransportAnimation));
+        coinAnimation->addToSequence(std::make_shared<AnimationMaterialOpacity>(coinPressedMaterial, 1, 0.0f));
+
+        coinAnimation->setLooped(true);
+
+        mAnimations.emplace_back(std::move(coinAnimation));
+    }
+
 
     for (auto&& anim : mAnimations)
         anim->animationStart();
@@ -243,7 +265,6 @@ bool Main::nextFrame() {
     if (mWindow.isPressed(GLFW_KEY_A))
         mLightPosition.x -= 10 * cameraSpeed;
 
-
     mCameraPosition.x = (float) (mCameraDistance * cos(mCameraHAngle));
     mCameraPosition.y = (float) (mCameraDistance * sin(mCameraVAngle));
     mCameraPosition.z = (float) (mCameraDistance * sin(mCameraHAngle));
@@ -253,6 +274,9 @@ bool Main::nextFrame() {
 
     mCamera->setPosition(mCameraPosition);
     mSpotLight->setTarget(mLightPosition);
+
+    mSpotLight->setTarget(mCoins[0] -> getPosition());
+
     mRenderer.renderScene(mMainScene, mCamera);
 
     mWindow.swapBuffers();

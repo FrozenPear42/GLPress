@@ -22,6 +22,7 @@ Renderer::Renderer() {
     mTimeUniform = glGetUniformLocation(mMainShaderProgram, "time");
 
     mOpacityUniform = glGetUniformLocation(mMainShaderProgram, "opacity");
+    mTextureDisplacementUniform = glGetUniformLocation(mMainShaderProgram, "textureDisplacement");
 
     mLightTypeUniform = glGetSubroutineUniformLocation(mMainShaderProgram, GL_FRAGMENT_SHADER, "lightType");
     mDirectLightType = glGetSubroutineIndex(mMainShaderProgram, GL_FRAGMENT_SHADER, "directLight");
@@ -125,6 +126,7 @@ void Renderer::renderModel(std::shared_ptr<Model>& model) {
     glUniformMatrix4fv(mModelUniform, 1, GL_FALSE, glm::value_ptr(model->mTransform));
 
     glUniform1f(mOpacityUniform, model->mMaterial->mOpacity);
+    glUniform2fv(mTextureDisplacementUniform, 1, glm::value_ptr(model->mMaterial->mTextureDisplacement));
 
     glActiveTexture(GL_TEXTURE0);
     if (model->mMaterial->mMapping)

@@ -14,9 +14,9 @@ class AnimationConcurrent : public Animation {
 private:
     std::vector<std::shared_ptr<Animation>> mAnimations;
 public:
-    AnimationConcurrent() : Animation(0) {}
+    AnimationConcurrent() : Animation(0) { }
 
-    void addAnimation(std::shared_ptr<Animation>& animation);
+    void addAnimation(std::shared_ptr<Animation>&& animation);
 
     virtual void animationStart();
 

@@ -6,6 +6,8 @@
 #include <memory>
 #include <GL/glew.h>
 #include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 #include "Texture.h"
 
 class Material {
@@ -17,8 +19,12 @@ private:
     std::shared_ptr<Texture> mDiffuseMap;
     std::shared_ptr<Texture> mNormalMap;
     std::shared_ptr<Texture> mSpecularMap;
+
+    glm::vec2 mTextureDisplacement;
+
     GLfloat mOpacity;
     GLfloat mShiness;
+
 public:
     Material() :
             mMapping(false), mDiffuseColor(glm::vec4(1, 1, 1, 1)), mOpacity(1.0) {};
@@ -50,6 +56,14 @@ public:
     void setDiffuseColor(glm::vec4 color) {
         mMapping = true;
         mDiffuseColor = color;
+    }
+
+    void setTextureDisplacement(glm::vec2 displacement) {
+        mTextureDisplacement = displacement;
+    }
+
+    glm::vec2 getTextureDisplacement() {
+        return mTextureDisplacement;
     }
 
     GLfloat getOpacity() { return mOpacity; }
