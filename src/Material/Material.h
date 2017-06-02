@@ -20,9 +20,14 @@ private:
     GLfloat mOpacity;
     GLfloat mShiness;
 public:
-    Material() : mMapping(false), mDiffuseColor(glm::vec4(1, 1, 1, 1)) {};
+    Material() :
+            mMapping(false), mDiffuseColor(glm::vec4(1, 1, 1, 1)), mOpacity(1.0) {};
 
-    Material(std::shared_ptr<Texture> diffuse) : mMapping(true), mDiffuseMap(diffuse) {};
+    Material(std::shared_ptr<Texture> diffuse) :
+            mMapping(true), mDiffuseMap(diffuse), mOpacity(1.0) {};
+
+    Material(std::shared_ptr<Texture> diffuse, std::shared_ptr<Texture> normal) :
+            mMapping(true), mDiffuseMap(diffuse), mNormalMap(normal), mOpacity(1.0) {};
 
 
     void enableMapping(bool mapping) { mMapping = mapping; };

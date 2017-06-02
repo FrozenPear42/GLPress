@@ -14,6 +14,7 @@ private:
     GLint mNormalMapUniform;
     GLint mSpecularMapUniform;
     GLint mTimeUniform;
+    GLint mOpacityUniform;
 
     GLint mLightTypeUniform;
     GLuint mDirectLightType;

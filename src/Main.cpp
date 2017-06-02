@@ -17,6 +17,7 @@
 #include "Model/CubeBuilder.h"
 #include "Model/PlaneBuilder.h"
 #include "Animation/AnimationModelMaterialSwap.h"
+#include "Animation/AnimationMaterialOpacity.h"
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                mDelta(0.0f),
@@ -199,6 +200,8 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     coinAnimation->addToSequence(std::make_shared<AnimationDelay>(3));
     coinAnimation->addToSequence(std::make_shared<AnimationModelMaterialSwap>(mCoins[0], coinPressedMaterial));
     coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, 0, 12), 3));
+    coinAnimation->addToSequence(std::make_shared<AnimationMaterialOpacity>(coinPressedMaterial, 3, 0.0f));
+
 
     mAnimations.emplace_back(std::move(seq));
     mAnimations.emplace_back(std::move(coinAnimation));

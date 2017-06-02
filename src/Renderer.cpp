@@ -7,6 +7,9 @@ Renderer::Renderer() {
 
     glEnable(GL_DEPTH_TEST);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     mMainShaderProgram = GLSLProgramCompiler::fromFiles("resources/shaders/main.vert", "resources/shaders/main.frag");
 
     mModelUniform = glGetUniformLocation(mMainShaderProgram, "model");
@@ -17,6 +20,8 @@ Renderer::Renderer() {
     mNormalMapUniform = glGetUniformLocation(mMainShaderProgram, "normalMap");
     mSpecularMapUniform = glGetUniformLocation(mMainShaderProgram, "specularMap");
     mTimeUniform = glGetUniformLocation(mMainShaderProgram, "time");
+
+    mOpacityUniform = glGetUniformLocation(mMainShaderProgram, "opacity");
 
     mLightTypeUniform = glGetSubroutineUniformLocation(mMainShaderProgram, GL_FRAGMENT_SHADER, "lightType");
     mDirectLightType = glGetSubroutineIndex(mMainShaderProgram, GL_FRAGMENT_SHADER, "directLight");
@@ -74,6 +79,7 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
     glUniformMatrix4fv(mProjectionUniform, 1, GL_FALSE, glm::value_ptr(camera->mProjection));
     glUniformMatrix4fv(mViewUniform, 1, GL_FALSE, glm::value_ptr(camera->mView));
 
+
     for (auto&& light : scene->mLights) {
 
         if (light->getType() == Light::Type::POINT) {
@@ -106,7 +112,6 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
 
             glUniform1f(mCutOffLightUniform, light->mCutOff);
             glUniform1f(mOuterCutOffLightUniform, light->mOuterCutOff);
-
         }
 
         for (auto&& model : scene->mModels) {
@@ -119,6 +124,7 @@ void Renderer::renderModel(std::shared_ptr<Model>& model) {
 
     glUniformMatrix4fv(mModelUniform, 1, GL_FALSE, glm::value_ptr(model->mTransform));
 
+    glUniform1f(mOpacityUniform, model->mMaterial->mOpacity);
 
     glActiveTexture(GL_TEXTURE0);
     if (model->mMaterial->mMapping)
