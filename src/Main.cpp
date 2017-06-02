@@ -35,7 +35,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     auto metalMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/green_metal.jpg"));
     auto conveyorMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/conveyor.png"));
     auto concreteMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/concrete.jpg"));
-    auto coinMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/coin.png"));
+    auto coinMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/coin.jpg"));
 
     auto halfPI = glm::half_pi<float>();
 
@@ -98,7 +98,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                                              .radius(2)
                                              .height(16)
                                              .sides(32)
-                                             .wrap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                             .wrap(glm::vec2(0, 0), glm::vec2(3, 5))
                                              .upperCap(glm::vec2(0, 0), glm::vec2(1, 1))
                                              .build(),
                                      brushedMaterial);
@@ -135,7 +135,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                                                     .mapping(glm::vec2(0, 0), glm::vec2(2, 5))
                                                     .build(),
                                             conveyorMaterial);
-    mTransportTop->setRotation(glm::vec3(-halfPI, 0, 0));
+    mTransportTop->setRotation(glm::vec3(halfPI, 0, 0));
     mTransportTop->setPosition(glm::vec3(0, 2.5, 0));
 
     mTransportBottom = std::make_shared<Model>(PlaneBuilder()
@@ -144,19 +144,21 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                                                        .mapping(glm::vec2(0, 0), glm::vec2(2, 5))
                                                        .build(),
                                                conveyorMaterial);
-    mTransportBottom->setRotation(glm::vec3(halfPI, 0, 0));
+    mTransportBottom->setRotation(glm::vec3(-halfPI, 0, 0));
     mTransportBottom->setPosition(glm::vec3(0, 1.5, 0));
 
     for (int i = 0; i < 1; ++i) {
         auto coin = std::make_shared<Model>(CylinderBuilder()
                                                     .radius(2)
                                                     .height(0.2)
-                                                    .sides(36)
-                                                    .upperCap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                                    .sides(60)
+                                                    .wrap(glm::vec2(0.0, 0.47), glm::vec2(1, 0.49))
+                                                    .upperCap(glm::vec2(0.5, 0.5), glm::vec2(1.0, 1.0))
+                                                    .lowerCap(glm::vec2(0.0, 0.5), glm::vec2(0.5, 1.0))
                                                     .build(),
                                             coinMaterial);
         coin->setRotation(glm::vec3(-halfPI, 0, 0));
-        coin->setPosition(glm::vec3(0, 2.7, 12 * (i - 1.5)));
+        coin->setPosition(glm::vec3(0, 2.6, 12 * (i - 1.5)));
         mCoins.emplace_back(coin);
     }
 
@@ -187,7 +189,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
 
     mCoins[0]->setPosition(glm::vec3(0, 6, -12));
     auto coinAnimation = std::make_unique<AnimationSequence>();
-    coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, -3, 0), 1));
+    coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, -3.4, 0), 1));
     coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, 0, 12), 3));
     coinAnimation->addToSequence(std::make_shared<AnimationDelay>(3));
     coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, 0, 12), 3));

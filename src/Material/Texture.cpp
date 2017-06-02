@@ -3,11 +3,14 @@
 //
 
 #include <SOIL/SOIL.h>
+#include <iostream>
 #include "Texture.h"
 
 std::shared_ptr<Texture> Texture::loadFromFile(std::string file) {
 
-    int width, height;
+    int width;
+    int height;
+    int channels;
     unsigned char* image;
     GLuint texture;
 
@@ -16,9 +19,11 @@ std::shared_ptr<Texture> Texture::loadFromFile(std::string file) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    image = SOIL_load_image(file.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    image = SOIL_load_image(file.c_str(), &width, &height, &channels, SOIL_LOAD_RGB);
     if (image == nullptr)
         throw std::runtime_error("Failed to load texture file: " + std::string(file));
+
+    std::cout << file << " ch: " << channels << " w: " << width << " h: " << height <<  std::endl;
 
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
