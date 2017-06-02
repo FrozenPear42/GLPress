@@ -19,7 +19,7 @@ struct Vertex {
 };
 
 class Mesh {
-    friend class MeshFactory;
+    friend class OBJParser;
 
 public:
     Mesh(std::vector<Vertex>&& vertices, std::vector<GLuint>&& indices);

@@ -30,6 +30,5 @@ std::shared_ptr<Texture> Texture::loadFromFile(std::string file) {
     return std::make_shared<Texture>(texture);
 }
 
-Texture::Texture(GLuint texture) : mTextureID(texture) {
-}
+Texture::Texture(GLuint texture) : mTextureID(texture) { }
 

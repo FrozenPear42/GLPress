@@ -55,7 +55,7 @@ public:
         return *this;
     };
 
-    CylinderBuilder& bottomCap(glm::vec2 begin, glm::vec2 end) {
+    CylinderBuilder& lowerCap(glm::vec2 begin, glm::vec2 end) {
         mLowerCapBegin = begin;
         mLowerCapEnd = end;
         return *this;

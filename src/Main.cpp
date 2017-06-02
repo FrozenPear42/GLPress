@@ -7,7 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Utils/Window.h"
 #include "Main.h"
-#include "Model/MeshFactory.h"
+#include "Model/OBJParser.h"
 #include "Utils/Logger.h"
 #include "Animation/AnimationModelMove.h"
 #include "Animation/AnimationSequence.h"
@@ -15,6 +15,7 @@
 #include "Animation/AnimationDelay.h"
 #include "Model/CylinderBuilder.h"
 #include "Model/CubeBuilder.h"
+#include "Model/PlaneBuilder.h"
 
 Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                mDelta(0.0f),
@@ -30,17 +31,53 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     mSkybox = std::make_shared<Skybox>("resources/skybox/", "skybox");
     mMainScene->setSkybox(mSkybox);
 
-    auto metalMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/rusty_diff.jpg"));
-    auto coinMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/coin.jpg"));
+    auto brushedMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/brushed.jpg"));
+    auto metalMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/green_metal.jpg"));
+    auto conveyorMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/conveyor.png"));
+    auto concreteMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/concrete.jpg"));
+    auto coinMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/coin.png"));
 
     auto halfPI = glm::half_pi<float>();
 
-    mBase = std::make_shared<Model>(MeshFactory::createCube(30, 2, 40), metalMaterial);
+    mBase = std::make_shared<Model>(CubeBuilder()
+                                            .width(40)
+                                            .height(2)
+                                            .depth(40)
+                                            .topMap(glm::vec2(0, 0), glm::vec2(8, 10))
+                                            .bottomMap(glm::vec2(0, 0), glm::vec2(5, 10))
+                                            .leftMap(glm::vec2(0, 0), glm::vec2(10, 1))
+                                            .rightMap(glm::vec2(0, 0), glm::vec2(10, 1))
+                                            .frontMap(glm::vec2(0, 0), glm::vec2(8, 1))
+                                            .backMap(glm::vec2(0, 0), glm::vec2(8, 1))
+                                            .build(),
+                                    concreteMaterial);
 
-    mColumnLeft = std::make_shared<Model>(MeshFactory::createCube(3, 12, 5), metalMaterial);
+    mColumnLeft = std::make_shared<Model>(CubeBuilder()
+                                                  .width(3)
+                                                  .height(12)
+                                                  .depth(5)
+                                                  .frontMap(glm::vec2(0, 0), glm::vec2(1, 4))
+                                                  .leftMap(glm::vec2(0, 0), glm::vec2(1, 4))
+                                                  .rightMap(glm::vec2(0, 0), glm::vec2(1, 4))
+                                                  .backMap(glm::vec2(0, 0), glm::vec2(1, 4))
+                                                  .topMap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                                  .bottomMap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                                  .build(),
+                                          metalMaterial);
     mColumnLeft->setPosition(glm::vec3(-10, 6.5, 0));
 
-    mColumnRight = std::make_shared<Model>(MeshFactory::createCube(3, 12, 5), metalMaterial);
+    mColumnRight = std::make_shared<Model>(CubeBuilder()
+                                                   .width(3)
+                                                   .height(12)
+                                                   .depth(5)
+                                                   .frontMap(glm::vec2(0, 0), glm::vec2(1, 4))
+                                                   .leftMap(glm::vec2(0, 0), glm::vec2(1, 4))
+                                                   .rightMap(glm::vec2(0, 0), glm::vec2(1, 4))
+                                                   .backMap(glm::vec2(0, 0), glm::vec2(1, 4))
+                                                   .topMap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                                   .bottomMap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                                   .build(),
+                                           metalMaterial);
     mColumnRight->setPosition(glm::vec3(10, 6.5, 0));
 
     mHandler = std::make_shared<Model>(CubeBuilder()
@@ -62,28 +99,62 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                                              .height(16)
                                              .sides(32)
                                              .wrap(glm::vec2(0, 0), glm::vec2(1, 1))
-                                             .build(), metalMaterial);
+                                             .upperCap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                             .build(),
+                                     brushedMaterial);
     mPress->setRotation(glm::vec3(-halfPI, 0, 0));
     mPress->setPosition(glm::vec3(0.0f, 11.0f, 0.0f));
 
-    mTransportFront = std::make_shared<Model>(MeshFactory::createCylinder(0.5, 8, 24), metalMaterial);
+    mTransportFront = std::make_shared<Model>(CylinderBuilder()
+                                                      .radius(0.5)
+                                                      .height(8)
+                                                      .sides(32)
+                                                      .wrap(glm::vec2(0, 0), glm::vec2(0.7, 1))
+                                                      .upperCap(glm::vec2(0.7, 0), glm::vec2(0.7, 0.3))
+                                                      .lowerCap(glm::vec2(0.7, 0), glm::vec2(0.7, 0.3))
+                                                      .build(),
+                                              conveyorMaterial);
     mTransportFront->setPosition(glm::vec3(0, 2, 15));
     mTransportFront->setRotation(glm::vec3(0, -halfPI, 0));
 
-    mTransportBack = std::make_shared<Model>(MeshFactory::createCylinder(0.5, 8, 24), metalMaterial);
+    mTransportBack = std::make_shared<Model>(CylinderBuilder()
+                                                     .radius(0.5)
+                                                     .height(8)
+                                                     .sides(32)
+                                                     .wrap(glm::vec2(0, 0), glm::vec2(0.7, 1))
+                                                     .upperCap(glm::vec2(0.7, 0), glm::vec2(0.7, 0.3))
+                                                     .lowerCap(glm::vec2(0.7, 0), glm::vec2(0.7, 0.3))
+                                                     .build(),
+                                             conveyorMaterial);
     mTransportBack->setPosition(glm::vec3(0, 2, -15));
     mTransportBack->setRotation(glm::vec3(0, -halfPI, 0));
 
-    mTransportTop = std::make_shared<Model>(MeshFactory::createPlane(8, 30, 2, 5), metalMaterial);
+    mTransportTop = std::make_shared<Model>(PlaneBuilder()
+                                                    .width(8)
+                                                    .height(30)
+                                                    .mapping(glm::vec2(0, 0), glm::vec2(2, 5))
+                                                    .build(),
+                                            conveyorMaterial);
     mTransportTop->setRotation(glm::vec3(-halfPI, 0, 0));
     mTransportTop->setPosition(glm::vec3(0, 2.5, 0));
 
-    mTransportBottom = std::make_shared<Model>(MeshFactory::createPlane(8, 30, 2, 5), metalMaterial);
+    mTransportBottom = std::make_shared<Model>(PlaneBuilder()
+                                                       .width(8)
+                                                       .height(30)
+                                                       .mapping(glm::vec2(0, 0), glm::vec2(2, 5))
+                                                       .build(),
+                                               conveyorMaterial);
     mTransportBottom->setRotation(glm::vec3(halfPI, 0, 0));
     mTransportBottom->setPosition(glm::vec3(0, 1.5, 0));
 
     for (int i = 0; i < 1; ++i) {
-        auto coin = std::make_shared<Model>(MeshFactory::createCylinder(2, 0.2, 240), coinMaterial);
+        auto coin = std::make_shared<Model>(CylinderBuilder()
+                                                    .radius(2)
+                                                    .height(0.2)
+                                                    .sides(36)
+                                                    .upperCap(glm::vec2(0, 0), glm::vec2(1, 1))
+                                                    .build(),
+                                            coinMaterial);
         coin->setRotation(glm::vec3(-halfPI, 0, 0));
         coin->setPosition(glm::vec3(0, 2.7, 12 * (i - 1.5)));
         mCoins.emplace_back(coin);
@@ -97,13 +168,12 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     mMainScene->addModel(mTransportFront);
     mMainScene->addModel(mTransportBack);
     mMainScene->addModel(mTransportTop);
+    mMainScene->addModel(mTransportBottom);
 
     for (auto&& coin : mCoins)
         mMainScene->addModel(coin);
 
-//     mMainScene->addModel(std::make_shared<Model>(MeshFactory::createCylinder(10, 10, 20), metalMaterial));
-
-    auto light = std::make_shared<DirectLight>(glm::vec3(0.5, -0.5, -0.5), glm::vec3(0.5, 0.7, 0.8), 3.0f);
+    auto light = std::make_shared<DirectLight>(glm::vec3(0.5, -0.5, -0.5), glm::vec3(1.0, 1.0, 1.0), 1.2f);
 //    mSpotLight = std::make_shared<PointLight>(glm::vec3(10, 12, 10), glm::vec3(0.5, 0.7, 0.8), 10.0f, 1.0f);
     mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(0.5, 0.7, 0.8),
                                              glm::radians(12.5f), 10.0f, 1.0f);

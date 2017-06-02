@@ -135,8 +135,7 @@ void Renderer::renderModel(std::shared_ptr<Model>& model) {
 //    glBindTexture(GL_TEXTURE_2D, model->mMaterial->mSpecularMap->getID());
 //    glUniform1i(mSpecularMapUniform, GL_TEXTURE2);
 
-    model->mMesh->
-            draw();
+    model->mMesh->draw();
 
 }
 
