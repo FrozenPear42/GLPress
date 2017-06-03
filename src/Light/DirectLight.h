@@ -9,7 +9,10 @@
 
 class DirectLight : public Light {
 public:
-    DirectLight(glm::vec3 direction, glm::vec3 color, GLfloat intensity);
+    DirectLight(glm::vec3 direction, GLfloat intensity, glm::vec3 color) :
+            Light(Type::DIRECT, intensity, color) {
+        mDirection = direction;
+    }
 };
 
 

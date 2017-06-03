@@ -13,12 +13,25 @@ public:
         DIRECT, POINT, SPOT
     };
 
-    Type getType();
+    Type getType() const { return mType; };
+
+    GLfloat getIntensity() const { return mIntensity; }
+
+    void setIntensity(GLfloat intensity) {
+        mIntensity = intensity;
+        mDiffuse = mColor * mIntensity;
+    };
+
+
 
 protected:
-    Light(Type type) : mType(type) {}
+    Light(Type type, GLfloat intensity, glm::vec3 color  = glm::vec3(1,1,1)) :
+            mType(type), mIntensity(intensity), mColor(color), mDiffuse(mColor * mIntensity) {}
 
     Type mType;
+
+    GLfloat mIntensity;
+    glm::vec3 mColor;
 
     glm::vec3 mDirection;
     glm::vec3 mPosition;

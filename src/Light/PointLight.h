@@ -11,8 +11,22 @@
 
 class PointLight : public Light {
 public:
-    PointLight(glm::vec3 position, glm::vec3 color, GLfloat intensity, GLfloat distance);
-    void setPosition(glm::vec3 position);
+    PointLight(glm::vec3 position, GLfloat distance, GLfloat intensity, glm::vec3 color) :
+            Light(Type::POINT, intensity, color) {
+        mPosition = position;
+        mConstant = 1.0f;
+        mLinear = 0.14f;
+        mQuadratic = 0.07f;
+    }
+
+    void setPosition(glm::vec3 position) {
+        mPosition = position;
+    }
+
+    glm::vec3 getPosition() const {
+        return mPosition;
+    }
+
 };
 
 #endif //GLPRESS_POINTLIGHT_H
