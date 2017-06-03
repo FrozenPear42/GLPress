@@ -30,8 +30,6 @@ uniform sampler2D specularMap;
 uniform float shiness;
 uniform float opacity;
 
-uniform float time;
-
 uniform Light light;
 uniform vec2 textureDisplacement;
 

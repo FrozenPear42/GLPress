@@ -23,10 +23,7 @@ std::shared_ptr<Mesh> CylinderBuilder::build() {
                               mWrapBegin.x + glm::vec2(i * deltaU, mWrapEnd.y));
     }
 
-    for (GLuint i = 0; i < 2 * mSides - 1; ++i) {
-        indices.emplace_back(2 * ((i + 1) / 2));
-        indices.emplace_back(i + 2);
-        indices.emplace_back(2 * ((i + 1) / 2) + 1);
+    for (GLuint i = 0; i < 2 * mSides; ++i) {
 
         indices.emplace_back(2 * ((i + 2) / 2));
         indices.emplace_back(i + 3);
@@ -63,7 +60,7 @@ std::shared_ptr<Mesh> CylinderBuilder::build() {
     GLfloat upperTextureSize = mUpperCapEnd.x - mUpperCapBegin.x;
 
     centerIdx = (GLuint) vertices.size();
-    vertices.emplace_back(glm::vec3(0, 0, mHeight / 2), glm::vec3(0, 0, 1), upperTextureCenter);
+    vertices.emplace_back(glm::vec3(0, 0, mHeight / 2), glm::vec3(0, 0, 1), lowerTextureCenter);
     for (GLuint i = 0; i <= mSides; ++i) {
         float x = std::cos(deltaAngle * i);
         float y = std::sin(deltaAngle * i);

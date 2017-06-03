@@ -3,12 +3,13 @@
 #include "Renderer.h"
 #include "Utils/GLSLProgramCompiler.h"
 
-Renderer::Renderer() {
-
-    glEnable(GL_DEPTH_TEST);
+Renderer::Renderer() : mAmbientColor(0.2, 0.2, 0.2, 1.0) {
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 
     mMainShaderProgram = GLSLProgramCompiler::fromFiles("resources/shaders/main.vert", "resources/shaders/main.frag");
 
@@ -19,7 +20,6 @@ Renderer::Renderer() {
     mDiffuseMapUniform = glGetUniformLocation(mMainShaderProgram, "diffuseMap");
     mNormalMapUniform = glGetUniformLocation(mMainShaderProgram, "normalMap");
     mSpecularMapUniform = glGetUniformLocation(mMainShaderProgram, "specularMap");
-    mTimeUniform = glGetUniformLocation(mMainShaderProgram, "time");
 
     mOpacityUniform = glGetUniformLocation(mMainShaderProgram, "opacity");
     mTextureDisplacementUniform = glGetUniformLocation(mMainShaderProgram, "textureDisplacement");
@@ -31,7 +31,6 @@ Renderer::Renderer() {
 
     mPositionLightUniform = glGetUniformLocation(mMainShaderProgram, "light.position");
     mDirectionLightUniform = glGetUniformLocation(mMainShaderProgram, "light.direction");
-    mAmbientLightUniform = glGetUniformLocation(mMainShaderProgram, "light.ambient");
     mDiffuseLightUniform = glGetUniformLocation(mMainShaderProgram, "light.diffuse");
     mSpecularLightUniform = glGetUniformLocation(mMainShaderProgram, "light.specular");
     mCutOffLightUniform = glGetUniformLocation(mMainShaderProgram, "light.cutOff");
@@ -45,9 +44,21 @@ Renderer::Renderer() {
     mSkyboxViewUniform = glGetUniformLocation(mSkyboxShaderProgram, "view");
     mSkyboxProjectionUniform = glGetUniformLocation(mSkyboxShaderProgram, "projection");
     mSkyboxTextureUniform = glGetUniformLocation(mSkyboxShaderProgram, "skybox");
+
+    mAmbientShader = GLSLProgramCompiler::fromFiles("resources/shaders/ambient.vert", "resources/shaders/ambient.frag");
+
+    mAmbientModelUniform = glGetUniformLocation(mAmbientShader, "model");
+    mAmbientViewUniform = glGetUniformLocation(mAmbientShader, "view");
+    mAmbientProjectionUniform = glGetUniformLocation(mAmbientShader, "projection");
+    mAmbientDiffuseUniform = glGetUniformLocation(mAmbientShader, "diffuse");
+    mAmbientAmbient = glGetUniformLocation(mAmbientShader, "ambient");
+    mAmbientTextureDisplacementUniform = glGetUniformLocation(mAmbientShader, "textureDisplacement");
+
 }
 
 void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera) {
+
+    glDepthMask(GL_TRUE);
 
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -69,17 +80,33 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
         glDepthMask(GL_TRUE);
     }
 
+    //Ambient
+    glUseProgram(mAmbientShader);
+    glProgramUniformMatrix4fv(mAmbientShader, mAmbientProjectionUniform, 1, GL_FALSE, glm::value_ptr(camera->mProjection));
+    glProgramUniformMatrix4fv(mAmbientShader, mAmbientViewUniform, 1, GL_FALSE, glm::value_ptr(camera->mView));
+    glProgramUniform4fv(mAmbientShader, mAmbientAmbient, 1, glm::value_ptr(mAmbientColor));
+
+    glBlendFuncSeparate(GL_ONE, GL_ZERO, GL_ONE, GL_ZERO);
+
+    for(auto&& model : scene->mModels)
+    {
+        glProgramUniformMatrix4fv(mAmbientShader, mAmbientModelUniform, 1, GL_FALSE, glm::value_ptr(model->mTransform));
+        glProgramUniform2fv(mAmbientShader, mAmbientTextureDisplacementUniform, 1, glm::value_ptr(model->mMaterial->mTextureDisplacement));
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, model->mMaterial->mDiffuseMap->getID());
+        glUniform1i(mAmbientDiffuseUniform, GL_TEXTURE0);
+        model->mMesh->draw();
+    }
+
+    glDepthMask(GL_FALSE);
+
+//    glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+    glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ONE);
 
     glUseProgram(mMainShaderProgram);
 
-    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count();
-    float fmodTime = (float) std::fmod(time, 1000 * glm::pi<float>());
-    glUniform1f(mTimeUniform, fmodTime);
-
     glUniformMatrix4fv(mProjectionUniform, 1, GL_FALSE, glm::value_ptr(camera->mProjection));
     glUniformMatrix4fv(mViewUniform, 1, GL_FALSE, glm::value_ptr(camera->mView));
-
 
     for (auto&& light : scene->mLights) {
 
@@ -87,7 +114,6 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
             glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mPointLightType);
 
             glUniform3fv(mPositionLightUniform, 1, glm::value_ptr(light->mPosition));
-            glUniform3fv(mAmbientLightUniform, 1, glm::value_ptr(light->mAmbient));
             glUniform3fv(mDiffuseLightUniform, 1, glm::value_ptr(light->mDiffuse));
             glUniform1f(mConstantLightUniform, light->mConstant);
             glUniform1f(mLinearLightUniform, light->mLinear);
@@ -97,7 +123,6 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
             glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mDirectLightType);
 
             glUniform3fv(mDirectionLightUniform, 1, glm::value_ptr(light->mDirection));
-            glUniform3fv(mAmbientLightUniform, 1, glm::value_ptr(light->mAmbient));
             glUniform3fv(mDiffuseLightUniform, 1, glm::value_ptr(light->mDiffuse));
 
         } else if (light->getType() == Light::Type::SPOT) {
@@ -105,7 +130,6 @@ void Renderer::renderScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera
 
             glUniform3fv(mPositionLightUniform, 1, glm::value_ptr(light->mPosition));
             glUniform3fv(mDirectionLightUniform, 1, glm::value_ptr(light->mDirection));
-            glUniform3fv(mAmbientLightUniform, 1, glm::value_ptr(light->mAmbient));
             glUniform3fv(mDiffuseLightUniform, 1, glm::value_ptr(light->mDiffuse));
             glUniform1f(mConstantLightUniform, light->mConstant);
             glUniform1f(mLinearLightUniform, light->mLinear);

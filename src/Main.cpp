@@ -179,16 +179,16 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     mMainScene->addModel(mTransportTop);
     mMainScene->addModel(mTransportBottom);
 
+
     for (auto&& coin : mCoins)
         mMainScene->addModel(coin);
 
     auto light = std::make_shared<DirectLight>(glm::vec3(0.5, -0.5, -0.5), glm::vec3(1.0, 1.0, 1.0), 1.2f);
 //    mSpotLight = std::make_shared<PointLight>(glm::vec3(10, 12, 10), glm::vec3(0.5, 0.7, 0.8), 10.0f, 1.0f);
     mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), glm::vec3(1.0, 1.0, 1.0),
-                                             glm::radians(12.5f), 10.0f, 2.0f);
+                                             glm::radians(12.5f), 10.0f, 3.0f);
+    mMainScene->addLight(mSpotLight);
     mMainScene->addLight(light);
-
-
     coinBlankMaterial->setOpacity(0.0);
 
     for (GLuint i = 0; i < mCoins.size(); ++i) {

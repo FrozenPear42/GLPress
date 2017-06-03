@@ -7,13 +7,15 @@
 class Renderer {
 private:
     GLuint mMainShaderProgram;
+
     GLint mProjectionUniform;
     GLint mViewUniform;
     GLint mModelUniform;
+
     GLint mDiffuseMapUniform;
     GLint mNormalMapUniform;
     GLint mSpecularMapUniform;
-    GLint mTimeUniform;
+
     GLint mOpacityUniform;
     GLint mTextureDisplacementUniform;
 
@@ -25,7 +27,6 @@ private:
     GLint mPositionLightUniform;
     GLint mDirectionLightUniform;
 
-    GLint mAmbientLightUniform;
     GLint mDiffuseLightUniform;
     GLint mSpecularLightUniform;
 
@@ -42,6 +43,15 @@ private:
     GLint mSkyboxProjectionUniform;
     GLint mSkyboxViewUniform;
 
+    GLuint mAmbientShader;
+    GLint mAmbientDiffuseUniform;
+    GLint mAmbientProjectionUniform;
+    GLint mAmbientViewUniform;
+    GLint mAmbientModelUniform;
+    GLint mAmbientTextureDisplacementUniform;
+    GLint mAmbientAmbient;
+
+    glm::vec4 mAmbientColor;
 
 private:
     void renderModel(std::shared_ptr<Model>& model);

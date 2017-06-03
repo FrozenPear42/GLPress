@@ -10,7 +10,6 @@ SpotLight::SpotLight(glm::vec3 position, glm::vec3 direction, glm::vec3 color, G
     mPosition = position;
     mDirection = direction;
     mDiffuse = color * intensity;
-    mAmbient = glm::normalize(color) * 0.1f;
 
     mConstant = 1.0f;
     mLinear = 0.14;

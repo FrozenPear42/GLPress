@@ -23,7 +23,6 @@ protected:
     glm::vec3 mDirection;
     glm::vec3 mPosition;
 
-    glm::vec3 mAmbient;
     glm::vec3 mDiffuse;
     glm::vec3 mSpecular;
 
