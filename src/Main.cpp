@@ -7,7 +7,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Utils/Window.h"
 #include "Main.h"
-#include "Model/OBJParser.h"
 #include "Utils/Logger.h"
 #include "Animation/AnimationModelMove.h"
 #include "Animation/AnimationSequence.h"
@@ -39,6 +38,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     auto brushedMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/brushed.jpg"));
     auto metalMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/green_metal.jpg"));
     auto conveyorMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/conveyor.png"));
+    auto rollMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/roll.jpg"));
     auto concreteMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/concrete.jpg"));
 
     auto coinBlankMaterial = std::make_shared<Material>(Texture::loadFromFile("resources/materials/coin_blank.jpg"));
@@ -117,11 +117,11 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                                                       .radius(0.5)
                                                       .height(8)
                                                       .sides(32)
-                                                      .wrap(glm::vec2(0, 0), glm::vec2(1, 1))
-                                                      .upperCap(glm::vec2(0.7, 0), glm::vec2(0.7, 0.3))
-                                                      .lowerCap(glm::vec2(0.7, 0), glm::vec2(0.7, 0.3))
+                                                      .wrap(glm::vec2(0.5, 0), glm::vec2(1, 1))
+                                                      .upperCap(glm::vec2(0.0, 0.5), glm::vec2(0.5, 1.0))
+                                                      .lowerCap(glm::vec2(0.0, 0.5), glm::vec2(0.5, 1.0))
                                                       .build(),
-                                              conveyorMaterial);
+                                              rollMaterial);
     mTransportFront->setPosition(glm::vec3(0, 2, 15));
     mTransportFront->setRotation(glm::vec3(0, -halfPI, 0));
 
@@ -133,7 +133,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                                                      .upperCap(glm::vec2(0.7, 0), glm::vec2(0.7, 0.3))
                                                      .lowerCap(glm::vec2(0.7, 0), glm::vec2(0.7, 0.3))
                                                      .build(),
-                                             conveyorMaterial);
+                                             rollMaterial);
     mTransportBack->setPosition(glm::vec3(0, 2, -15));
     mTransportBack->setRotation(glm::vec3(0, -halfPI, 0));
 
@@ -155,20 +155,18 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
     mTransportBottom->setRotation(glm::vec3(-halfPI, 0, 0));
     mTransportBottom->setPosition(glm::vec3(0, 1.5, 0));
 
-    for (int i = 0; i < 1; ++i) {
-        auto coin = std::make_shared<Model>(CylinderBuilder()
-                                                    .radius(2)
-                                                    .height(0.2)
-                                                    .sides(60)
-                                                    .wrap(glm::vec2(0.0, 0.47), glm::vec2(1, 0.49))
-                                                    .upperCap(glm::vec2(0.5, 0.5), glm::vec2(1.0, 1.0))
-                                                    .lowerCap(glm::vec2(0.0, 0.5), glm::vec2(0.5, 1.0))
-                                                    .build(),
-                                            coinBlankMaterial);
-        coin->setRotation(glm::vec3(-halfPI, 0, 0));
-        coin->setPosition(glm::vec3(0, 6, -12));
-        mCoins.emplace_back(coin);
-    }
+    auto coin = std::make_shared<Model>(CylinderBuilder()
+                                                .radius(2)
+                                                .height(0.2)
+                                                .sides(60)
+                                                .wrap(glm::vec2(0.0, 0.47), glm::vec2(1, 0.49))
+                                                .upperCap(glm::vec2(0.5, 0.5), glm::vec2(1.0, 1.0))
+                                                .lowerCap(glm::vec2(0.0, 0.5), glm::vec2(0.5, 1.0))
+                                                .build(),
+                                        coinBlankMaterial);
+    coin->setRotation(glm::vec3(-halfPI, 0, 0));
+    coin->setPosition(glm::vec3(0, 6, -12));
+    mCoins.emplace_back(coin);
 
     mMainScene->addModel(mBase);
     mMainScene->addModel(mColumnLeft);
@@ -185,52 +183,57 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
         mMainScene->addModel(coin);
 
     auto light = std::make_shared<DirectLight>(glm::vec3(0.5, -0.5, -0.5), 1.0f, glm::vec3(1.0, 1.0, 1.0));
-    mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), 3.0f, glm::radians(12.5f), 50.0f, glm::vec3(1.0, 1.0, 1.0));
+    mSpotLight = std::make_shared<SpotLight>(glm::vec3(0, 15, 0), glm::vec3(0, -1, 0), 3.0f, glm::radians(12.5f), 50.0f,
+                                             glm::vec3(1.0, 1.0, 1.0));
     mMainScene->addLight(mSpotLight);
     mMainScene->addLight(light);
 
-    coinBlankMaterial->setOpacity(0.0);
 
-    for (GLuint i = 0; i < mCoins.size(); ++i) {
+    coinBlankMaterial->setOpacity(0.0f);
+    mSpotLight->setIntensity(0.0f);
 
-        auto coinAnimation = std::make_unique<AnimationSequence>();
+    auto coinAnimation = std::make_unique<AnimationSequence>();
 
-        coinAnimation->addToSequence(std::make_shared<AnimationDelay>(5 * i));
-        coinAnimation->addToSequence(std::make_shared<AnimationMaterialOpacity>(coinBlankMaterial, 1, 1.0f));
-        coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[i], glm::vec3(0, -3.4, 0), 1));
+    auto fadeInAnimation = std::make_shared<AnimationConcurrent>();
+    fadeInAnimation->addAnimation(std::make_shared<AnimationMaterialOpacity>(coinBlankMaterial, 1.0f, 1.0f));
+    fadeInAnimation->addAnimation(std::make_shared<AnimationLightIntensity>(mSpotLight, 1.0f, 7.0f));
+
+    coinAnimation->addToSequence(std::move(fadeInAnimation));
+
+    coinAnimation->addToSequence(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, -3.4, 0), 1));
+
+    auto firstTransportAnimation = std::make_shared<AnimationConcurrent>();
+    firstTransportAnimation->addAnimation(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, 0, 12), 3));
+    firstTransportAnimation->addAnimation(
+            std::make_shared<AnimationTextureDisplacement>(conveyorMaterial, glm::vec2(0, -2), 3));
+
+    coinAnimation->addToSequence(std::move(firstTransportAnimation));
 
 
-        auto firstTransportAnimation = std::make_shared<AnimationConcurrent>();
-        firstTransportAnimation->addAnimation(std::make_shared<AnimationModelMove>(mCoins[i], glm::vec3(0, 0, 12), 3));
-        firstTransportAnimation->addAnimation(std::make_shared<AnimationTextureDisplacement>(conveyorMaterial, glm::vec2(0, -2), 3));
+    auto pressSequence = std::make_shared<AnimationSequence>();
+    pressSequence->addToSequence(std::make_shared<AnimationModelMove>(mPress, -glm::vec3(0, 2, 0), 0.3));
+    pressSequence->addToSequence(std::make_shared<AnimationDelay>(0.3));
+    pressSequence->addToSequence(std::make_shared<AnimationModelMaterialSwap>(mCoins[0], coinPressedMaterial));
+    pressSequence->addToSequence(std::make_shared<AnimationModelMove>(mPress, glm::vec3(0, 2, 0), 1.6));
 
-        coinAnimation->addToSequence(std::move(firstTransportAnimation));
+    coinAnimation->addToSequence(std::move(pressSequence));
 
+    auto secondTransportAnimation = std::make_shared<AnimationConcurrent>();
+    secondTransportAnimation->addAnimation(std::make_shared<AnimationModelMove>(mCoins[0], glm::vec3(0, 0, 12), 3));
+    secondTransportAnimation->addAnimation(
+            std::make_shared<AnimationTextureDisplacement>(conveyorMaterial, glm::vec2(0, -2), 3));
 
-        auto pressSequence = std::make_shared<AnimationSequence>();
-        pressSequence->addToSequence(std::make_shared<AnimationModelMove>(mPress, -glm::vec3(0, 2, 0), 0.3));
-        pressSequence->addToSequence(std::make_shared<AnimationDelay>(0.3));
-        pressSequence->addToSequence(std::make_shared<AnimationModelMaterialSwap>(mCoins[i], coinPressedMaterial));
-        pressSequence->addToSequence(std::make_shared<AnimationModelMove>(mPress, glm::vec3(0, 2, 0), 1.6));
+    coinAnimation->addToSequence(std::move(secondTransportAnimation));
 
-        coinAnimation->addToSequence(std::move(pressSequence));
+    auto fadeOutAnimation = std::make_shared<AnimationConcurrent>();
+    fadeOutAnimation->addAnimation(std::make_shared<AnimationMaterialOpacity>(coinPressedMaterial, 1.0f, 0.0f));
+    fadeOutAnimation->addAnimation(std::make_shared<AnimationLightIntensity>(mSpotLight, 1.0f, 0.0f));
 
-        auto secondTransportAnimation = std::make_shared<AnimationConcurrent>();
-        secondTransportAnimation->addAnimation(std::make_shared<AnimationModelMove>(mCoins[i], glm::vec3(0, 0, 12), 3));
-        secondTransportAnimation->addAnimation(std::make_shared<AnimationTextureDisplacement>(conveyorMaterial, glm::vec2(0, -2), 3));
+    coinAnimation->addToSequence(std::move(fadeOutAnimation));
 
-        coinAnimation->addToSequence(std::move(secondTransportAnimation));
+    coinAnimation->setLooped(true);
 
-        auto fadeOutAnimation = std::make_shared<AnimationConcurrent>();
-        fadeOutAnimation->addAnimation(std::make_shared<AnimationMaterialOpacity>(coinPressedMaterial, 1, 0.0f));
-//        fadeOutAnimation->addAnimation(std::make_shared<AnimationLightIntensity>(mSpotLight, 1, 0.0f));
-
-        coinAnimation->addToSequence(std::move(fadeOutAnimation));
-
-        coinAnimation->setLooped(true);
-
-        mAnimations.emplace_back(std::move(coinAnimation));
-    }
+    mAnimations.emplace_back(std::move(coinAnimation));
 
 
     for (auto&& anim : mAnimations)
@@ -280,7 +283,7 @@ bool Main::nextFrame() {
     mCamera->setPosition(mCameraPosition);
     mSpotLight->setTarget(mLightPosition);
 
-    mSpotLight->setTarget(mCoins[0] -> getPosition());
+    mSpotLight->setTarget(mCoins[0]->getPosition());
 
     mRenderer.renderScene(mMainScene, mCamera);
 

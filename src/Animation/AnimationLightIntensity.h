@@ -3,8 +3,8 @@
 
 
 #include <memory>
-#include "../Light/Light.h"
 #include "Animation.h"
+#include "../Light/Light.h"
 
 class AnimationLightIntensity :  public Animation {
 private:
@@ -13,7 +13,7 @@ private:
     GLfloat mBegin;
     GLfloat mStep;
 public:
-    AnimationLightIntensity(std::shared_ptr<Light>& light, GLfloat duration, GLfloat destination) :
+    AnimationLightIntensity(std::shared_ptr<Light> light, GLfloat duration, GLfloat destination) :
     Animation(duration), mLight(light), mDestination(destination) {}
 
     virtual void animationStart();
