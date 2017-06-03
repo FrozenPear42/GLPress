@@ -116,7 +116,7 @@ Main::Main() : mWindow(800, 600, "Kocham GKOM <3"),
                                                       .radius(0.5)
                                                       .height(8)
                                                       .sides(32)
-                                                      .wrap(glm::vec2(0, 0), glm::vec2(0.7, 1))
+                                                      .wrap(glm::vec2(0, 0), glm::vec2(1, 1))
                                                       .upperCap(glm::vec2(0.7, 0), glm::vec2(0.7, 0.3))
                                                       .lowerCap(glm::vec2(0.7, 0), glm::vec2(0.7, 0.3))
                                                       .build(),

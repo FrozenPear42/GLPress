@@ -23,8 +23,12 @@ std::shared_ptr<Mesh> CylinderBuilder::build() {
                               mWrapBegin.x + glm::vec2(i * deltaU, mWrapEnd.y));
     }
 
-    for (GLuint i = 0; i < 2 * mSides; ++i) {
 
+    indices.emplace_back(0);
+    indices.emplace_back(2);
+    indices.emplace_back(1);
+
+    for (GLuint i = 0; i < 2 * mSides - 1; ++i) {
         indices.emplace_back(2 * ((i + 2) / 2));
         indices.emplace_back(i + 3);
         indices.emplace_back(2 * ((i + 1) / 2) + 1);
