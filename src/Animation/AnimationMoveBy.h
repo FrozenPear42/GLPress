@@ -6,7 +6,7 @@
 #include "../Model/Model.h"
 #include "Animation.h"
 
-class AnimationModelMove : public Animation {
+class AnimationMoveBy : public Animation {
 private:
     std::shared_ptr<Model> mModel;
     glm::vec3 mBegin;
@@ -15,7 +15,7 @@ private:
     glm::vec3 mStep;
 
 public:
-    AnimationModelMove(std::shared_ptr<Model> model, glm::vec3 delta, GLfloat duration);
+    AnimationMoveBy(std::shared_ptr<Model> model, glm::vec3 delta, GLfloat duration);
 
     virtual void animationStart();
 

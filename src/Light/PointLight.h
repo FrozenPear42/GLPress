@@ -11,7 +11,7 @@
 
 class PointLight : public Light {
 public:
-    PointLight(glm::vec3 position, GLfloat distance, GLfloat intensity, glm::vec3 color) :
+    PointLight(glm::vec3 position, GLfloat intensity, glm::vec3 color) :
             Light(Type::POINT, intensity, color) {
         mPosition = position;
         mConstant = 1.0f;

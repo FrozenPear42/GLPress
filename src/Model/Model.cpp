@@ -3,8 +3,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Model.h"
 
-Model::Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) : mMesh(std::move(mesh)),
-                                                                               mMaterial(std::move(material)) {}
+Model::Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) :
+        mMesh(std::move(mesh)), mMaterial(std::move(material)) {}
 
 
 void Model::setTransform(glm::mat4 transform) {

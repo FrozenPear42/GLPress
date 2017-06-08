@@ -13,7 +13,9 @@ public:
 
     Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
 
-    glm::vec3 getPosition() { return mPosition; };
+    glm::vec3 getPosition() const { return mPosition; }
+
+    glm::vec3 getRotation() const { return mRotation; }
 
     void setPosition(glm::vec3 position);
 
